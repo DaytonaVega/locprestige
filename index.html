@@ -16,7 +16,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <link rel="stylesheet" href="css/styles.css?v=22" />
+    <link rel="stylesheet" href="css/styles.css?v=24" />
   </head>
   <body>
     <div class="loader" id="pageLoader" aria-hidden="true">
@@ -61,12 +61,12 @@
           <h1>Louez<br /><em>l’exception.</em></h1>
           <p class="hero-lead">
             Une flotte choisie, une remise des clés sur rendez-vous.
-            La réservation se confirme par Snapchat ou e-mail.
+            La demande se fait en ligne, avec pièce d’identité et permis.
           </p>
           <ul class="hero-facts">
             <li><span>Flotte</span><strong id="heroFleet"></strong></li>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
-            <li><span>Réservation</span><strong>Par message</strong></li>
+            <li><span>Réservation</span><strong>Dossier en ligne</strong></li>
           </ul>
         </div>
         <form class="datebar" id="reserver" autocomplete="off">
@@ -108,8 +108,8 @@
         </article>
         <article data-reveal>
           <span>03</span>
-          <h2>Confirmez par message</h2>
-          <p>Snapchat ou e-mail : on vous répond, puis on fixe la remise des clés.</p>
+          <h2>Déposez votre dossier</h2>
+          <p>Nom, prénom, permis et pièce d’identité. On vous écrit ensuite pour confirmer, sans paiement en ligne.</p>
         </article>
       </div>
     </section>
@@ -179,8 +179,8 @@
             <p>Pas d’ouverture en libre-service. On confirme les dates, puis on fixe la remise et le retour.</p>
           </article>
           <article data-reveal>
-            <h3>Par message</h3>
-            <p>Pas de paiement en ligne. La demande se fait par Snapchat ou e-mail, on vous répond, et on avance ensemble.</p>
+            <h3>Dossier en ligne</h3>
+            <p>Pas de paiement en ligne. La demande se fait sur le site, avec permis et pièce d’identité. On vous répond pour confirmer.</p>
           </article>
         </div>
       </div>
@@ -195,7 +195,7 @@
         <div class="faq-list" data-reveal>
           <details open>
             <summary>Comment réserver ?</summary>
-            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis confirmez par Snapchat ou e-mail. On vous répond pour valider le créneau et la remise des clés.</p>
+            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis déposez votre dossier : identité, permis et pièce d’identité. On vous répond pour valider le créneau.</p>
           </details>
           <details>
             <summary>Comment récupérer la voiture ?</summary>
@@ -228,7 +228,7 @@
           </p>
           <ul>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
-            <li><span>Réservation</span><strong>Snapchat ou e-mail</strong></li>
+            <li><span>Réservation</span><strong>Dossier en ligne</strong></li>
           </ul>
           <div class="socials">
             <a class="social" id="snapAgency" href="#" target="_blank" rel="noopener" aria-label="Ouvrir Snapchat">
@@ -245,11 +245,10 @@
     <section class="cta">
       <div class="wrap cta-inner" data-reveal>
         <p class="eyebrow">Réserver</p>
-        <h2>Écrivez-nous. On s’occupe du reste.</h2>
-        <p>Snapchat ou e-mail, avec vos dates et le véhicule.</p>
+        <h2>Déposez votre dossier.</h2>
+        <p>Identité, permis et pièce d’identité. On vous confirme ensuite par message. Pas de paiement en ligne.</p>
         <div class="cta-actions">
-          <a class="btn btn-gold" id="snapCta" href="#" target="_blank" rel="noopener">Snapchat</a>
-          <a class="btn btn-light" id="mailCta" href="#">E-mail</a>
+          <button class="btn btn-gold" type="button" id="bookingCta">Réserver</button>
         </div>
       </div>
     </section>
@@ -258,7 +257,7 @@
       <div class="wrap footer-grid">
         <div class="footer-brand">
           <img class="footer-logo" src="images/logo.png" alt="Loc Prestige" />
-          <p>Réservation uniquement par message</p>
+          <p>Demande en ligne, confirmation par message</p>
         </div>
         <nav class="footer-nav" aria-label="Pied de page">
           <a href="#flotte">Flotte</a>
@@ -312,22 +311,158 @@
             <div class="calendar" id="modalCalendar"></div>
             <p class="book-note" id="modalBookNote"></p>
             <div class="contact-box">
-              <span>Confirmer la demande</span>
-              <div class="socials">
-                <a class="social" id="snapModal" href="#" target="_blank" rel="noopener" aria-label="Ouvrir Snapchat">
-                  <img src="images/snapchat.png" alt="" />
-                </a>
-                <a class="social social-mail" id="mailModal" href="#" aria-label="Ouvrir l’e-mail">
-                  <img src="images/email.png" alt="" />
-                </a>
-              </div>
+              <button class="btn" type="button" id="openBookingBtn">Continuer la réservation</button>
             </div>
           </div>
         </div>
       </article>
     </dialog>
 
-    <script src="js/vehicles.js?v=22"></script>
-    <script src="js/app.js?v=22"></script>
+    <dialog class="modal booking-modal" id="bookingModal" aria-labelledby="bookingTitle">
+      <article class="booking-sheet">
+        <button class="close" type="button" id="bookingClose" aria-label="Fermer"></button>
+        <div id="bookingFormWrap">
+          <header class="booking-head">
+            <p class="eyebrow">Réservation</p>
+            <h2 id="bookingTitle">Votre dossier</h2>
+            <p class="booking-recap" id="bookingRecap"></p>
+          </header>
+          <form class="booking-form" id="bookingForm" autocomplete="on" novalidate>
+            <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+            <input type="hidden" name="vehicule_id" id="bookingVehicleId" />
+
+            <p class="booking-kicker">Location</p>
+            <div class="booking-grid">
+              <label class="field is-full">
+                <span>Véhicule</span>
+                <select name="vehicule" id="bookingVehicle" required>
+                  <option value="">Choisir un véhicule</option>
+                </select>
+              </label>
+            </div>
+
+            <p class="booking-kicker">Conducteur</p>
+            <div class="booking-grid">
+              <label class="field">
+                <span>Genre</span>
+                <select name="genre" required>
+                  <option value="">Choisir</option>
+                  <option value="Homme">Homme</option>
+                  <option value="Femme">Femme</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Nom</span>
+                <input type="text" name="nom" autocomplete="family-name" required />
+              </label>
+              <label class="field">
+                <span>Prénom</span>
+                <input type="text" name="prenom" autocomplete="given-name" required />
+              </label>
+              <label class="field">
+                <span>Date de naissance</span>
+                <input type="date" name="date_naissance" autocomplete="bday" required />
+              </label>
+              <label class="field">
+                <span>Téléphone</span>
+                <input type="tel" name="telephone" autocomplete="tel" inputmode="tel" required />
+              </label>
+              <label class="field">
+                <span>E-mail</span>
+                <input type="email" name="email" autocomplete="email" required />
+              </label>
+              <label class="field is-full">
+                <span>Adresse</span>
+                <input type="text" name="adresse" autocomplete="street-address" required />
+              </label>
+              <label class="field">
+                <span>Code postal</span>
+                <input type="text" name="code_postal" autocomplete="postal-code" inputmode="numeric" required />
+              </label>
+              <label class="field">
+                <span>Ville</span>
+                <input type="text" name="ville" autocomplete="address-level2" required />
+              </label>
+            </div>
+
+            <p class="booking-kicker">Permis de conduire</p>
+            <div class="booking-grid">
+              <label class="field">
+                <span>N° de permis</span>
+                <input type="text" name="permis_numero" required />
+              </label>
+              <label class="field">
+                <span>Date d’obtention</span>
+                <input type="date" name="permis_date" required />
+              </label>
+              <label class="file-field">
+                <input type="file" name="permis_recto" accept="image/jpeg,image/png,image/webp,application/pdf" required />
+                <span>Permis — recto</span>
+                <strong data-file-name>Ajouter une photo</strong>
+              </label>
+              <label class="file-field">
+                <input type="file" name="permis_verso" accept="image/jpeg,image/png,image/webp,application/pdf" required />
+                <span>Permis — verso</span>
+                <strong data-file-name>Ajouter une photo</strong>
+              </label>
+            </div>
+
+            <p class="booking-kicker">Pièce d’identité</p>
+            <div class="booking-grid">
+              <label class="field">
+                <span>Type de pièce</span>
+                <select name="type_piece" id="bookingIdType" required>
+                  <option value="">Choisir</option>
+                  <option value="Carte d’identité">Carte d’identité</option>
+                  <option value="Passeport">Passeport</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>N° de la pièce</span>
+                <input type="text" name="piece_numero" required />
+              </label>
+              <label class="file-field">
+                <input type="file" name="piece_recto" accept="image/jpeg,image/png,image/webp,application/pdf" required />
+                <span>Pièce — recto</span>
+                <strong data-file-name>Ajouter une photo</strong>
+              </label>
+              <label class="file-field" id="bookingIdBack">
+                <input type="file" name="piece_verso" accept="image/jpeg,image/png,image/webp,application/pdf" required />
+                <span>Pièce — verso</span>
+                <strong data-file-name>Ajouter une photo</strong>
+              </label>
+            </div>
+
+            <p class="booking-kicker">Message</p>
+            <div class="booking-grid">
+              <label class="field is-full">
+                <span>Précision (facultatif)</span>
+                <textarea name="message" rows="3"></textarea>
+              </label>
+              <label class="check is-full">
+                <input type="checkbox" name="consentement" required />
+                <span>J’accepte que Loc Prestige reçoive mes informations et mes pièces (permis et pièce d’identité) par e-mail, uniquement pour traiter cette location. Aucun paiement n’est demandé sur le site.</span>
+              </label>
+            </div>
+
+            <p class="booking-error" id="bookingError" role="alert"></p>
+            <div class="booking-actions">
+              <button class="btn" type="submit" id="bookingSubmit">Envoyer la demande</button>
+              <p class="booking-legal">La demande n’est pas une confirmation. On vous écrit ensuite pour valider.</p>
+            </div>
+          </form>
+        </div>
+        <div class="booking-done" id="bookingDone" hidden>
+          <p class="eyebrow">Demande envoyée</p>
+          <h2>On a bien reçu votre dossier.</h2>
+          <p>Loc Prestige vous écrit pour confirmer les dates et fixer la remise des clés. Rien n’est débité en ligne.</p>
+          <button class="btn" type="button" id="bookingDoneClose">Fermer</button>
+        </div>
+      </article>
+    </dialog>
+
+    <script src="js/vehicles.js?v=24"></script>
+    <script src="js/app.js?v=24"></script>
   </body>
 </html>

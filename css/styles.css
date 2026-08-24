@@ -50,7 +50,9 @@ img {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -1218,6 +1220,10 @@ h1 {
   border-top: 1px solid rgba(22, 21, 19, 0.08);
 }
 
+.contact-box .btn {
+  width: 100%;
+}
+
 .contact-box span {
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1227,6 +1233,217 @@ h1 {
 .contact-box.is-disabled {
   opacity: 0.38;
   pointer-events: none;
+}
+
+.booking-modal {
+  width: min(760px, calc(100% - 28px));
+}
+
+.booking-sheet {
+  background: var(--white);
+  position: relative;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 40px 40px 36px;
+}
+
+.booking-head {
+  margin-bottom: 28px;
+  padding-right: 36px;
+}
+
+.booking-head h2 {
+  margin: 8px 0 10px;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 500;
+}
+
+.booking-recap {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.booking-kicker {
+  margin: 28px 0 14px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 20px;
+}
+
+.field,
+.file-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field.is-full,
+.file-field.is-full,
+.check.is-full {
+  grid-column: 1 / -1;
+}
+
+.field span,
+.file-field span {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  margin: 0;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(22, 21, 19, 0.14);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 84px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--gold);
+}
+
+.field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+    linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+  background-position: calc(100% - 12px) calc(50% + 3px), calc(100% - 6px) calc(50% + 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 28px;
+}
+
+.file-field {
+  position: relative;
+  padding: 16px 16px 14px;
+  border: 1px dashed rgba(22, 21, 19, 0.18);
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.file-field:hover,
+.file-field.has-file {
+  border-color: var(--gold);
+  background: rgba(196, 165, 114, 0.08);
+}
+
+.file-field[hidden] {
+  display: none;
+}
+
+.file-field input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-field strong {
+  font-weight: 400;
+  font-size: 0.92rem;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+.check input {
+  margin-top: 4px;
+  accent-color: var(--gold);
+  flex: 0 0 auto;
+}
+
+.booking-error {
+  min-height: 1.3em;
+  margin: 18px 0 0;
+  color: #8a4b3a;
+  font-size: 0.88rem;
+}
+
+.booking-actions {
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.booking-actions .btn {
+  width: 100%;
+}
+
+.booking-legal {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+.hp {
+  position: absolute;
+  left: -9999px;
+  height: 0;
+  width: 0;
+  opacity: 0;
+}
+
+.booking-done {
+  text-align: center;
+  padding: 48px 12px 16px;
+}
+
+.booking-done h2 {
+  margin: 8px 0 14px;
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 500;
+}
+
+.booking-done p {
+  margin: 0 auto 28px;
+  max-width: 28rem;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.booking-done .eyebrow {
+  margin-bottom: 8px;
+}
+
+.booking-done .btn {
+  width: auto;
+  min-width: 180px;
+  margin: 0 auto;
 }
 
 .empty {
@@ -1455,6 +1672,10 @@ h1 {
     grid-template-columns: 1fr 1fr;
   }
 
+  .booking-sheet {
+    padding: 32px 24px 28px;
+  }
+
   .hero-layout {
     gap: 40px;
   }
@@ -1520,7 +1741,8 @@ h1 {
   .footer-grid,
   .occasions-grid,
   .promises-grid,
-  .faq-layout {
+  .faq-layout,
+  .booking-grid {
     grid-template-columns: 1fr;
   }
 
