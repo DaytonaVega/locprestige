@@ -234,12 +234,12 @@ const VEHICLES = [
     price: 65,
     deposit: 800,
     featured: true,
-    image: "images/208/trois-quarts.jpg",
+    image: "images/208/trois-quarts.jpg?v=31",
     images: [
-      "images/208/trois-quarts.jpg",
-      "images/208/avant.jpg",
-      "images/208/arriere.jpg",
-      "images/208/poste.jpg",
+      "images/208/trois-quarts.jpg?v=31",
+      "images/208/avant.jpg?v=31",
+      "images/208/arriere.jpg?v=31",
+      "images/208/poste.jpg?v=31",
     ],
     blurb:
       "Une 208 2024, noire, i-Cockpit et écran central. Compacte, récente, manuelle : la citadine pour la ville, un week-end ou un remplacement sans se prendre la tête.",
