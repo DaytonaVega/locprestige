@@ -3,6 +3,7 @@ const state = {
   from: "",
   to: "",
   pick: "from",
+  hover: "",
   calCursor: startOfMonth(new Date()),
   vehicleId: "",
 };
@@ -271,24 +272,81 @@ function dateLabel(value) {
   return formatLong(value) || "Ajouter une date";
 }
 
+function previewEnd() {
+  if (state.pick === "to" && state.from && state.hover && state.hover >= state.from) {
+    return state.hover;
+  }
+  return state.to || "";
+}
+
+function calendarEnds() {
+  return { start: state.from || "", end: previewEnd() };
+}
+
+function dayClasses(value, booked) {
+  const { start, end } = calendarEnds();
+  if (booked) return { picked: false, inRange: false };
+  const isStart = Boolean(start && value === start);
+  const isEnd = Boolean(end && value === end);
+  return {
+    picked: isStart || isEnd,
+    inRange: Boolean(start && end && value >= start && value <= end),
+  };
+}
+
+function markCalendarDay(btn) {
+  const booked = btn.classList.contains("is-booked");
+  const mark = dayClasses(btn.dataset.day, booked);
+  btn.classList.toggle("is-picked", mark.picked);
+  btn.classList.toggle("is-range", mark.inRange);
+}
+
+function updateCalendarHighlights() {
+  [els.calendar, els.heroCalendar].forEach((el) => {
+    el?.querySelectorAll("[data-day]").forEach(markCalendarDay);
+  });
+  const shownTo = previewEnd();
+  if (els.dateToText) els.dateToText.textContent = dateLabel(shownTo);
+  if (els.modalToText) els.modalToText.textContent = dateLabel(shownTo);
+  updateDateHint();
+}
+
+function updateDateHint() {
+  const hint = document.getElementById("dateBookHint");
+  if (!hint) return;
+  const shownTo = previewEnd();
+  if (!state.from) {
+    hint.textContent = "Choisissez d’abord le jour de prise en charge, puis glissez jusqu’au retour.";
+  } else if (!state.to) {
+    hint.textContent = shownTo
+      ? `Retour le ${formatLong(shownTo)}. Cliquez pour confirmer.`
+      : `Prise en charge le ${formatLong(state.from)}. Glissez jusqu’au jour de retour.`;
+  } else {
+    hint.textContent = `${formatLong(state.from)} → ${formatLong(state.to)}`;
+  }
+}
+
 function syncDateInputs() {
   if (els.dateFrom) els.dateFrom.value = state.from;
   if (els.dateTo) els.dateTo.value = state.to;
   if (els.dateFromText) els.dateFromText.textContent = dateLabel(state.from);
-  if (els.dateToText) els.dateToText.textContent = dateLabel(state.to);
+  if (els.dateToText) els.dateToText.textContent = dateLabel(previewEnd());
   if (els.modalFromText) els.modalFromText.textContent = dateLabel(state.from);
-  if (els.modalToText) els.modalToText.textContent = dateLabel(state.to);
+  if (els.modalToText) els.modalToText.textContent = dateLabel(previewEnd());
   [els.dateFromBtn, els.modalFromBtn].forEach((btn) => btn?.classList.toggle("is-on", state.pick === "from"));
   [els.dateToBtn, els.modalToBtn].forEach((btn) => btn?.classList.toggle("is-on", state.pick === "to"));
+  updateDateHint();
 }
 
 function setDates(from, to) {
   state.from = from || "";
   state.to = to && from && to < from ? from : to || "";
+  if (state.to) state.hover = "";
   syncDateInputs();
   renderFleet();
   renderCount();
   if (state.vehicleId) refreshModalBooking();
+  else renderCalendar();
   if (els.booking?.open) fillBookingRecap();
 }
 
@@ -313,14 +371,13 @@ function paintCalendar(el, vehicle) {
     const today = parseDay(iso(new Date()));
     const booked = vehicle ? dayBooked(vehicle, date) : false;
     const past = date < today;
-    const picked = value === state.from || value === state.to;
-    const inRange = state.from && state.to && value > state.from && value < state.to;
+    const mark = dayClasses(value, booked);
     const isToday = value === iso(new Date());
     const cls = [
       past || booked ? "is-muted" : "",
       booked ? "is-booked" : "",
-      picked ? "is-picked" : "",
-      inRange ? "is-range" : "",
+      mark.picked ? "is-picked" : "",
+      mark.inRange ? "is-range" : "",
       isToday ? "is-today" : "",
     ]
       .filter(Boolean)
@@ -346,6 +403,23 @@ function renderCalendar() {
   paintCalendar(els.heroCalendar, null);
 }
 
+function bindCalendarHover(el) {
+  if (!el || el.dataset.hoverBound === "1") return;
+  el.dataset.hoverBound = "1";
+  el.addEventListener("pointerover", (e) => {
+    const day = e.target.closest("[data-day]");
+    if (!day || day.disabled) return;
+    if (state.hover === day.dataset.day) return;
+    state.hover = day.dataset.day;
+    updateCalendarHighlights();
+  });
+  el.addEventListener("pointerleave", () => {
+    if (!state.hover) return;
+    state.hover = "";
+    updateCalendarHighlights();
+  });
+}
+
 function openDateBook(pick) {
   state.pick = pick || "from";
   if (els.dateBook) {
@@ -357,26 +431,25 @@ function openDateBook(pick) {
 }
 
 function closeDateBook() {
+  state.hover = "";
   if (els.dateBook) els.dateBook.hidden = true;
   if (els.datebar) els.datebar.classList.remove("is-open");
 }
 
 function pickDay(value) {
+  state.hover = "";
   if (state.pick === "to" && state.from && value >= state.from) {
-    setDates(state.from, value);
     state.pick = "from";
-    syncDateInputs();
+    setDates(state.from, value);
     return;
   }
   if (!state.from || (state.from && state.to) || value < state.from) {
-    setDates(value, "");
     state.pick = "to";
-    syncDateInputs();
+    setDates(value, "");
     return;
   }
-  setDates(state.from, value);
   state.pick = "from";
-  syncDateInputs();
+  setDates(state.from, value);
 }
 
 function refreshModalBooking() {
@@ -392,10 +465,14 @@ function refreshModalBooking() {
     ? "Ces dates sont déjà prises. Choisissez un autre créneau."
     : state.from && state.to
       ? `Demande pour ${formatLong(state.from)} → ${formatLong(state.to)}.`
-      : "Sélectionnez une prise en charge, puis un retour.";
+      : state.from
+        ? `Prise en charge le ${formatLong(state.from)}. Choisissez le jour de retour.`
+        : "Sélectionnez une prise en charge, puis un retour.";
   els.bookNote.classList.toggle("is-busy", conflict);
   const box = els.modal.querySelector(".contact-box");
   if (box) box.classList.toggle("is-disabled", conflict);
+  const continueBtn = document.getElementById("openBookingBtn");
+  if (continueBtn) continueBtn.disabled = !state.from || !state.to || conflict;
   fillContacts(v.name);
   renderCalendar();
 }
@@ -517,10 +594,11 @@ els.modal.addEventListener("click", (e) => {
     renderCalendar();
   }
   const day = e.target.closest("[data-day]");
-  if (day) pickDay(day.dataset.day);
+  if (day && !day.disabled) pickDay(day.dataset.day);
 });
 
 els.datebar.addEventListener("click", (e) => {
+  e.stopPropagation();
   if (e.target.closest(".datebar-label")) {
     openDateBook(state.from && !state.to ? "to" : "from");
     return;
@@ -537,7 +615,7 @@ els.datebar.addEventListener("click", (e) => {
     return;
   }
   const day = e.target.closest("[data-day]");
-  if (day) pickDay(day.dataset.day);
+  if (day && !day.disabled) pickDay(day.dataset.day);
 });
 
 els.datebar.addEventListener("submit", (e) => {
@@ -552,7 +630,8 @@ els.datebar.addEventListener("submit", (e) => {
 
 document.addEventListener("click", (e) => {
   if (!els.datebar || !els.datebar.classList.contains("is-open")) return;
-  if (els.datebar.contains(e.target)) return;
+  const path = typeof e.composedPath === "function" ? e.composedPath() : [];
+  if (path.includes(els.datebar) || els.datebar.contains(e.target)) return;
   if (e.target.closest("#bookingCta")) return;
   closeDateBook();
 });
@@ -917,6 +996,8 @@ renderFilters();
 renderFleet();
 renderCount();
 renderTicker();
+bindCalendarHover(els.heroCalendar);
+bindCalendarHover(els.calendar);
 
 observeReveals();
 
