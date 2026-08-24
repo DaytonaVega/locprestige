@@ -224,6 +224,27 @@ const VEHICLES = [
       "Une Classe A 2021 AMG Line, blanche, toit panoramique. Double écran MBUX, habitacle cuir et surpiqûres rouges, éclairage d’ambiance : la citadine prestige pour la ville, un week-end ou un événement.",
   },
   {
+    id: "trafic",
+    name: "Renault Trafic",
+    category: "utilitaire",
+    seats: 9,
+    transmission: "Manuelle",
+    fuel: "Diesel",
+    price: 60,
+    deposit: 500,
+    featured: true,
+    image: "images/trafic/avant.jpg",
+    images: [
+      "images/trafic/avant.jpg",
+      "images/trafic/arriere.jpg",
+      "images/trafic/sieges.jpg",
+      "images/trafic/poste.jpg",
+      "images/trafic/habitacle.jpg",
+    ],
+    blurb:
+      "Un Trafic argenté, 9 places. Sièges cuir surpiqués, écran central, stores aux vitres : l’utilitaire pour un groupe, un événement ou simplement transporter du monde sans se serrer.",
+  },
+  {
     id: "bmw-116i",
     name: "BMW 116i Série 1 2025",
     category: "citadine",
@@ -252,4 +273,5 @@ const CATEGORIES = [
   { id: "all", label: "Tous" },
   { id: "sportive", label: "Sportives" },
   { id: "citadine", label: "Citadines" },
+  { id: "utilitaire", label: "Utilitaires" },
 ];
