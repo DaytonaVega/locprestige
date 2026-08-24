@@ -16,7 +16,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <link rel="stylesheet" href="css/styles.css?v=24" />
+    <link rel="stylesheet" href="css/styles.css?v=25" />
   </head>
   <body>
     <div class="loader" id="pageLoader" aria-hidden="true">
@@ -66,7 +66,7 @@
           <ul class="hero-facts">
             <li><span>Flotte</span><strong id="heroFleet"></strong></li>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
-            <li><span>Réservation</span><strong>Dossier en ligne</strong></li>
+            <li><span>Acompte</span><strong>150 €</strong></li>
           </ul>
         </div>
         <form class="datebar" id="reserver" autocomplete="off">
@@ -109,7 +109,7 @@
         <article data-reveal>
           <span>03</span>
           <h2>Déposez votre dossier</h2>
-          <p>Nom, prénom, permis et pièce d’identité. On vous écrit ensuite pour confirmer, sans paiement en ligne.</p>
+          <p>Nom, prénom, permis et pièce d’identité. Un acompte de 150 € est demandé pour réserver.</p>
         </article>
       </div>
     </section>
@@ -179,8 +179,8 @@
             <p>Pas d’ouverture en libre-service. On confirme les dates, puis on fixe la remise et le retour.</p>
           </article>
           <article data-reveal>
-            <h3>Dossier en ligne</h3>
-            <p>Pas de paiement en ligne. La demande se fait sur le site, avec permis et pièce d’identité. On vous répond pour confirmer.</p>
+            <h3>Acompte</h3>
+            <p>Un acompte de 150 € est demandé pour réserver. La demande se fait sur le site, avec permis et pièce d’identité.</p>
           </article>
         </div>
       </div>
@@ -195,15 +195,15 @@
         <div class="faq-list" data-reveal>
           <details open>
             <summary>Comment réserver ?</summary>
-            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis déposez votre dossier : identité, permis et pièce d’identité. On vous répond pour valider le créneau.</p>
+            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis déposez votre dossier : identité, permis et pièce d’identité. Un acompte de 150 € est demandé pour réserver.</p>
           </details>
           <details>
             <summary>Comment récupérer la voiture ?</summary>
             <p>Uniquement sur rendez-vous, après confirmation. Il n’y a pas de retrait sans échange de messages.</p>
           </details>
           <details>
-            <summary>Est-ce qu’on peut payer sur le site ?</summary>
-            <p>Non. Loc Prestige ne prend pas de paiement en ligne. La réservation se confirme par message, puis on organise le reste ensemble.</p>
+            <summary>L’acompte, c’est obligatoire ?</summary>
+            <p>Oui. Un acompte de 150 € est demandé pour réserver. La caution indiquée sur la fiche, quand il y en a une, reste à part.</p>
           </details>
           <details>
             <summary>La caution, c’est obligatoire ?</summary>
@@ -228,7 +228,7 @@
           </p>
           <ul>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
-            <li><span>Réservation</span><strong>Dossier en ligne</strong></li>
+            <li><span>Acompte</span><strong>150 €</strong></li>
           </ul>
           <div class="socials">
             <a class="social" id="snapAgency" href="#" target="_blank" rel="noopener" aria-label="Ouvrir Snapchat">
@@ -246,7 +246,7 @@
       <div class="wrap cta-inner" data-reveal>
         <p class="eyebrow">Réserver</p>
         <h2>Déposez votre dossier.</h2>
-        <p>Identité, permis et pièce d’identité. On vous confirme ensuite par message. Pas de paiement en ligne.</p>
+        <p>Identité, permis et pièce d’identité. Un acompte de 150 € est demandé pour réserver.</p>
         <div class="cta-actions">
           <button class="btn btn-gold" type="button" id="bookingCta">Réserver</button>
         </div>
@@ -257,7 +257,7 @@
       <div class="wrap footer-grid">
         <div class="footer-brand">
           <img class="footer-logo" src="images/logo.png" alt="Loc Prestige" />
-          <p>Demande en ligne, confirmation par message</p>
+          <p>Acompte de 150 € pour réserver</p>
         </div>
         <nav class="footer-nav" aria-label="Pied de page">
           <a href="#flotte">Flotte</a>
@@ -326,6 +326,7 @@
             <p class="eyebrow">Réservation</p>
             <h2 id="bookingTitle">Votre dossier</h2>
             <p class="booking-recap" id="bookingRecap"></p>
+            <p class="booking-deposit">Acompte de 150 € pour réserver.</p>
           </header>
           <form class="booking-form" id="bookingForm" autocomplete="on" novalidate>
             <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" />
@@ -442,27 +443,27 @@
               </label>
               <label class="check is-full">
                 <input type="checkbox" name="consentement" required />
-                <span>J’accepte que Loc Prestige reçoive mes informations et mes pièces (permis et pièce d’identité) par e-mail, uniquement pour traiter cette location. Aucun paiement n’est demandé sur le site.</span>
+                <span>J’accepte que Loc Prestige reçoive mes informations et mes pièces (permis et pièce d’identité) par e-mail, uniquement pour traiter cette location. Un acompte de 150 € est demandé pour réserver.</span>
               </label>
             </div>
 
             <p class="booking-error" id="bookingError" role="alert"></p>
             <div class="booking-actions">
               <button class="btn" type="submit" id="bookingSubmit">Envoyer la demande</button>
-              <p class="booking-legal">La demande n’est pas une confirmation. On vous écrit ensuite pour valider.</p>
+              <p class="booking-legal">Un acompte de 150 € est demandé pour réserver. On vous écrit ensuite pour valider.</p>
             </div>
           </form>
         </div>
         <div class="booking-done" id="bookingDone" hidden>
           <p class="eyebrow">Demande envoyée</p>
           <h2>On a bien reçu votre dossier.</h2>
-          <p>Loc Prestige vous écrit pour confirmer les dates et fixer la remise des clés. Rien n’est débité en ligne.</p>
+          <p>Loc Prestige vous écrit pour confirmer les dates et l’acompte de 150 €, puis on fixe la remise des clés.</p>
           <button class="btn" type="button" id="bookingDoneClose">Fermer</button>
         </div>
       </article>
     </dialog>
 
-    <script src="js/vehicles.js?v=24"></script>
-    <script src="js/app.js?v=24"></script>
+    <script src="js/vehicles.js?v=25"></script>
+    <script src="js/app.js?v=25"></script>
   </body>
 </html>
