@@ -224,6 +224,27 @@ const VEHICLES = [
       "Une Classe A 2021 AMG Line, blanche, toit panoramique. Double écran MBUX, habitacle cuir et surpiqûres rouges, éclairage d’ambiance : la citadine prestige pour la ville, un week-end ou un événement.",
   },
   {
+    id: "208",
+    name: "Peugeot 208 2024",
+    category: "citadine",
+    year: "2024",
+    seats: 5,
+    transmission: "Manuelle",
+    fuel: "Essence",
+    price: 65,
+    deposit: 800,
+    featured: true,
+    image: "images/208/trois-quarts.jpg",
+    images: [
+      "images/208/trois-quarts.jpg",
+      "images/208/avant.jpg",
+      "images/208/arriere.jpg",
+      "images/208/poste.jpg",
+    ],
+    blurb:
+      "Une 208 2024, noire, i-Cockpit et écran central. Compacte, récente, manuelle : la citadine pour la ville, un week-end ou un remplacement sans se prendre la tête.",
+  },
+  {
     id: "trafic",
     name: "Renault Trafic",
     category: "utilitaire",
