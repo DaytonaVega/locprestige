@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0b0b" />
-    <title>Loc Prestige — Location prestige à Auxerre</title>
+    <title>Loc Prestige — Location prestige</title>
     <meta
       name="description"
-      content="Location de voitures prestige à Auxerre. Tarifs clairs, remise des clés sur rendez-vous. Réservation par Snapchat ou e-mail."
+      content="Location de voitures prestige. Tarifs clairs, remise des clés sur rendez-vous. Réservation par Snapchat ou e-mail."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,14 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
     <link rel="icon" type="image/png" href="images/logo.png" />
-    <link rel="stylesheet" href="css/styles.css?v=21" />
+    <link rel="stylesheet" href="css/styles.css?v=22" />
   </head>
   <body>
     <div class="loader" id="pageLoader" aria-hidden="true">
@@ -33,13 +27,13 @@
     <header class="header" id="siteHeader">
       <div class="wrap header-inner">
         <a class="logo" href="#top">
-          <img src="images/logo.png" alt="Loc Prestige — Agence de location" />
+          <img src="images/logo.png" alt="Loc Prestige" />
         </a>
         <nav class="nav" id="siteNav" aria-label="Navigation principale">
           <a href="#flotte">Flotte</a>
           <a href="#reserver">Réserver</a>
           <a href="#occasions">Occasions</a>
-          <a href="#agence">L’agence</a>
+          <a href="#contact">Contact</a>
         </nav>
         <div class="header-actions">
           <a class="btn btn-ghost" href="#reserver">Réserver</a>
@@ -63,16 +57,16 @@
       <div class="hero-texture" aria-hidden="true"></div>
       <div class="wrap hero-layout">
         <div class="hero-copy">
-          <p class="eyebrow hero-eyebrow">Auxerre · Yonne</p>
+          <p class="eyebrow hero-eyebrow">Location prestige</p>
           <h1>Louez<br /><em>l’exception.</em></h1>
           <p class="hero-lead">
             Une flotte choisie, une remise des clés sur rendez-vous.
             La réservation se confirme par Snapchat ou e-mail.
           </p>
           <ul class="hero-facts">
-            <li><span>Ville</span><strong>Auxerre</strong></li>
             <li><span>Flotte</span><strong id="heroFleet"></strong></li>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
+            <li><span>Réservation</span><strong>Par message</strong></li>
           </ul>
         </div>
         <form class="datebar" id="reserver" autocomplete="off">
@@ -115,7 +109,7 @@
         <article data-reveal>
           <span>03</span>
           <h2>Confirmez par message</h2>
-          <p>Snapchat ou e-mail : on vous répond, puis on fixe la remise des clés à Auxerre.</p>
+          <p>Snapchat ou e-mail : on vous répond, puis on fixe la remise des clés.</p>
         </article>
       </div>
     </section>
@@ -135,7 +129,7 @@
           <article data-reveal>
             <span>02</span>
             <h3>Mariage &amp; événement</h3>
-            <p>Arriver dans une voiture qui se voit. Remise des clés à Auxerre, sur rendez-vous.</p>
+            <p>Arriver dans une voiture qui se voit. Remise des clés sur rendez-vous.</p>
           </article>
           <article data-reveal>
             <span>03</span>
@@ -156,7 +150,7 @@
         <div class="wrap">
           <header class="section-head" data-reveal>
             <p class="eyebrow">La flotte</p>
-            <h2>La flotte, à Auxerre.</h2>
+            <h2>La flotte.</h2>
             <p class="count" id="fleetCount"></p>
           </header>
           <div class="filters" id="filters"></div>
@@ -173,8 +167,8 @@
         </header>
         <div class="promises-grid">
           <article data-reveal>
-            <h3>À Auxerre</h3>
-            <p>La flotte est ici, dans l’Yonne. La remise et le retour des clés se font sur rendez-vous, après confirmation.</p>
+            <h3>Remise des clés</h3>
+            <p>La remise et le retour se font sur rendez-vous, après confirmation des dates et du véhicule.</p>
           </article>
           <article data-reveal>
             <h3>Tarifs affichés</h3>
@@ -182,7 +176,7 @@
           </article>
           <article data-reveal>
             <h3>Sur rendez-vous</h3>
-            <p>Pas d’agence ouverte en libre-service. On confirme les dates, puis on fixe la remise et le retour à Auxerre.</p>
+            <p>Pas d’ouverture en libre-service. On confirme les dates, puis on fixe la remise et le retour.</p>
           </article>
           <article data-reveal>
             <h3>Par message</h3>
@@ -204,8 +198,8 @@
             <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis confirmez par Snapchat ou e-mail. On vous répond pour valider le créneau et la remise des clés.</p>
           </details>
           <details>
-            <summary>Où récupérer la voiture ?</summary>
-            <p>À Auxerre, dans l’Yonne (89), uniquement sur rendez-vous après confirmation. Il n’y a pas de retrait sans échange de messages.</p>
+            <summary>Comment récupérer la voiture ?</summary>
+            <p>Uniquement sur rendez-vous, après confirmation. Il n’y a pas de retrait sans échange de messages.</p>
           </details>
           <details>
             <summary>Est-ce qu’on peut payer sur le site ?</summary>
@@ -223,17 +217,16 @@
       </div>
     </section>
 
-    <section class="agency" id="agence">
+    <section class="agency" id="contact">
       <div class="wrap agency-grid">
         <div class="agency-copy" data-reveal>
-          <p class="eyebrow">L’agence</p>
-          <h2>Auxerre, au cœur de l’Yonne.</h2>
+          <p class="eyebrow">Contact</p>
+          <h2>Par message, sur rendez-vous.</h2>
           <p>
-            Loc Prestige est une agence de location à Auxerre. La remise et le retour des clés
+            Loc Prestige est une location prestige. La remise et le retour des clés
             se font sur rendez-vous, après confirmation du véhicule et des dates.
           </p>
           <ul>
-            <li><span>Ville</span><strong>Auxerre · 89</strong></li>
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
             <li><span>Réservation</span><strong>Snapchat ou e-mail</strong></li>
           </ul>
@@ -246,9 +239,6 @@
             </a>
           </div>
         </div>
-        <div class="agency-map" data-reveal>
-          <div id="agencyMap" role="img" aria-label="Carte d’Auxerre, Yonne"></div>
-        </div>
       </div>
     </section>
 
@@ -256,7 +246,7 @@
       <div class="wrap cta-inner" data-reveal>
         <p class="eyebrow">Réserver</p>
         <h2>Écrivez-nous. On s’occupe du reste.</h2>
-        <p>Snapchat ou e-mail, avec vos dates et le véhicule. Réponse depuis Auxerre.</p>
+        <p>Snapchat ou e-mail, avec vos dates et le véhicule.</p>
         <div class="cta-actions">
           <a class="btn btn-gold" id="snapCta" href="#" target="_blank" rel="noopener">Snapchat</a>
           <a class="btn btn-light" id="mailCta" href="#">E-mail</a>
@@ -268,14 +258,14 @@
       <div class="wrap footer-grid">
         <div class="footer-brand">
           <img class="footer-logo" src="images/logo.png" alt="Loc Prestige" />
-          <p>Réservation uniquement par message · Auxerre (89)</p>
+          <p>Réservation uniquement par message</p>
         </div>
         <nav class="footer-nav" aria-label="Pied de page">
           <a href="#flotte">Flotte</a>
           <a href="#reserver">Réserver</a>
           <a href="#occasions">Occasions</a>
           <a href="#faq">Questions</a>
-          <a href="#agence">L’agence</a>
+          <a href="#contact">Contact</a>
         </nav>
         <div class="socials">
           <a class="social" id="snapFooter" href="#" target="_blank" rel="noopener" aria-label="Ouvrir Snapchat">
@@ -337,12 +327,7 @@
       </article>
     </dialog>
 
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
-    <script src="js/vehicles.js?v=21"></script>
-    <script src="js/app.js?v=21"></script>
+    <script src="js/vehicles.js?v=22"></script>
+    <script src="js/app.js?v=22"></script>
   </body>
 </html>

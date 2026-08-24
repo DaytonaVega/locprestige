@@ -483,35 +483,6 @@ function observeReveals(root = document) {
   });
 }
 
-function initMap() {
-  const holder = document.getElementById("agencyMap");
-  if (!holder || typeof L === "undefined") return;
-  const map = L.map(holder, {
-    scrollWheelZoom: false,
-    zoomControl: false,
-  }).setView([47.7982, 3.5736], 13);
-
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: "&copy; OpenStreetMap &copy; CARTO",
-    maxZoom: 18,
-  }).addTo(map);
-
-  L.control.zoom({ position: "bottomright" }).addTo(map);
-
-  const pin = L.divIcon({
-    className: "",
-    html: '<div class="map-pin"></div>',
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
-  });
-
-  L.marker([47.7982, 3.5736], { icon: pin })
-    .addTo(map)
-    .bindPopup("<strong>Loc Prestige</strong><br>Auxerre · Yonne (89)<br>Remise des clés sur rendez-vous");
-
-  setTimeout(() => map.invalidateSize(), 250);
-}
-
 els.filters.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-category]");
   if (!btn) return;
@@ -637,7 +608,6 @@ renderCount();
 renderTicker();
 
 observeReveals();
-initMap();
 
 function hideLoader() {
   const loader = document.getElementById("pageLoader");
