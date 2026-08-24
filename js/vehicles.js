@@ -1,7 +1,7 @@
 const CONTACT = {
   email: "locprestige89@outlook.fr",
-  snapchat: "locprestige89",
-  snapUrl: "https://www.snapchat.com/add/locprestige89",
+  snapchat: "krlocation",
+  snapUrl: "https://www.snapchat.com/add/krlocation?share_id=SXHXNUFNSLO_61AMKYuJpw&locale=fr_BE",
 };
 
 const VEHICLES = [
