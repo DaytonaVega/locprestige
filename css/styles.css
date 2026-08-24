@@ -1265,12 +1265,6 @@ h1 {
   font-weight: 300;
 }
 
-.booking-deposit {
-  margin: 8px 0 0;
-  color: var(--ink);
-  font-weight: 400;
-}
-
 .booking-kicker {
   margin: 28px 0 14px;
   letter-spacing: 0.16em;
