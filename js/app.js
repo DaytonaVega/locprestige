@@ -177,7 +177,7 @@ function mailHref(car) {
       ? `Location ${car} — ${formatLong(state.from)} au ${formatLong(state.to)}`
       : car
         ? `Location ${car}`
-        : "Location Loc Prestige"
+        : "Location KR Location"
   );
   const body = encodeURIComponent(
     car && state.from && state.to
@@ -843,7 +843,7 @@ function missingRequired() {
 function bookingMailto(v, form) {
   const subject = encodeURIComponent(`Demande de location — ${v.name} — ${formatLong(state.from)} au ${formatLong(state.to)}`);
   const body = encodeURIComponent(
-    `Demande de location Loc Prestige\n\n` +
+    `Demande de location KR Location\n\n` +
       `Véhicule : ${v.name}\n` +
       `Prise en charge : ${formatLong(state.from)}\n` +
       `Retour : ${formatLong(state.to)}\n\n` +
