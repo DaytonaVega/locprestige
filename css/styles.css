@@ -301,6 +301,15 @@ textarea {
   animation: fade-up 1s 0.12s both;
 }
 
+.hero-copy h1::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: 22px 0 0;
+  background: var(--gold);
+}
+
 h1 {
   margin: 0 0 22px;
   font-family: var(--serif);
@@ -343,6 +352,13 @@ h1 {
 .hero-facts li {
   display: grid;
   gap: 4px;
+  padding-right: 28px;
+  border-right: 1px solid rgba(196, 165, 114, 0.28);
+}
+
+.hero-facts li:last-child {
+  padding-right: 0;
+  border-right: 0;
 }
 
 .hero-facts span {
@@ -378,7 +394,8 @@ h1 {
   color: var(--ink);
   text-align: left;
   border: 1px solid rgba(196, 165, 114, 0.28);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  border-top: 2px solid var(--gold);
+  box-shadow: 0 32px 70px rgba(0, 0, 0, 0.34);
   animation: fade-up 1s 0.56s both;
 }
 
@@ -464,6 +481,10 @@ h1 {
   justify-content: center;
 }
 
+.btn[hidden] {
+  display: none !important;
+}
+
 .btn:hover {
   background: var(--gold);
   color: var(--black);
@@ -504,11 +525,16 @@ h1 {
 }
 
 .steps article span {
-  display: block;
-  margin-bottom: 18px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(196, 165, 114, 0.45);
+  border-radius: 50%;
   color: var(--gold);
-  font-size: 0.68rem;
-  letter-spacing: 0.28em;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
 }
 
 .steps h2,
@@ -599,6 +625,11 @@ h1 {
   background: #111;
   margin-bottom: 18px;
   aspect-ratio: 4 / 3;
+  transition: box-shadow 0.4s var(--ease);
+}
+
+.card:hover .media {
+  box-shadow: inset 0 0 0 1px rgba(196, 165, 114, 0.55);
 }
 
 .card .media::before {
@@ -697,7 +728,7 @@ h1 {
 }
 
 .card:hover .media img {
-  transform: scale(1.05);
+  transform: scale(1.07);
 }
 
 .card:hover .more {
@@ -1402,6 +1433,7 @@ h1 {
 .booking-actions {
   margin-top: 22px;
   display: grid;
+  grid-template-columns: auto 1fr;
   gap: 12px;
 }
 
@@ -1536,6 +1568,14 @@ h1 {
   padding: 28px 24px;
   border: 1px solid rgba(196, 165, 114, 0.38);
   min-height: 220px;
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease), background 0.35s var(--ease);
+}
+
+.occasions-grid article:hover,
+.promises-grid article:hover {
+  border-color: var(--gold);
+  background: rgba(196, 165, 114, 0.06);
+  transform: translateY(-4px);
 }
 
 .occasions-grid span {
@@ -1625,6 +1665,16 @@ h1 {
 .cta-inner {
   text-align: center;
   max-width: 40rem;
+  padding: 8px 0 4px;
+}
+
+.cta-inner h2::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 1px;
+  margin: 18px auto 0;
+  background: var(--gold);
 }
 
 .cta-inner h2 {
@@ -1758,6 +1808,11 @@ h1 {
     gap: 20px;
   }
 
+  .hero-facts li {
+    padding-right: 0;
+    border-right: 0;
+  }
+
   .occasions,
   .promises,
   .cta,
@@ -1800,6 +1855,198 @@ h1 {
     padding: 10px 16px;
     font-size: 0.62rem;
   }
+}
+
+.toast {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  z-index: 70;
+  display: grid;
+  gap: 4px;
+  width: min(440px, calc(100% - 32px));
+  padding: 16px 18px;
+  background: var(--black);
+  color: #fff;
+  border: 1px solid rgba(196, 165, 114, 0.4);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  transform: translateX(-50%);
+  animation: fade-up 0.5s var(--ease);
+}
+
+.toast[hidden] {
+  display: none;
+}
+
+.toast strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  font-weight: 500;
+}
+
+.toast span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.booking-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(22, 21, 19, 0.1);
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.booking-steps li span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(196, 165, 114, 0.45);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 0.58rem;
+}
+
+.booking-steps li.is-on {
+  color: var(--ink);
+  border-bottom-color: var(--gold);
+}
+
+.booking-steps li.is-on span {
+  background: var(--gold);
+  color: var(--black);
+  border-color: var(--gold);
+}
+
+.booking-steps li.is-done {
+  color: var(--ink);
+}
+
+.booking-steps li.is-done span {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.booking-pane {
+  display: none;
+}
+
+.booking-pane.is-on {
+  display: block;
+  animation: fade-up 0.45s var(--ease);
+}
+
+.booking-note {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.booking-send-recap {
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  border: 1px solid rgba(196, 165, 114, 0.28);
+}
+
+.booking-send-recap li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(22, 21, 19, 0.08);
+}
+
+.booking-send-recap li:last-child {
+  border-bottom: 0;
+}
+
+.booking-send-recap span {
+  color: var(--muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.booking-send-recap strong {
+  font-weight: 500;
+  text-align: right;
+}
+
+.file-field img[data-file-preview] {
+  width: 100%;
+  height: 88px;
+  object-fit: cover;
+  background: #111;
+}
+
+.file-field.has-file img[data-file-preview]:not([hidden]) {
+  display: block;
+}
+
+.btn-ghost-dark {
+  background: transparent;
+  color: var(--ink);
+  border-color: rgba(22, 21, 19, 0.18);
+}
+
+.btn-ghost-dark:hover {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.booking-actions {
+  grid-template-columns: auto 1fr;
+}
+
+.booking-actions .booking-legal,
+.booking-error {
+  grid-column: 1 / -1;
+}
+
+.booking-actions #bookingNextBtn,
+.booking-actions #bookingSubmit {
+  width: 100%;
+}
+
+#bookingBack[hidden] ~ #bookingNextBtn:not([hidden]),
+#bookingBack[hidden] ~ #bookingSubmit:not([hidden]) {
+  grid-column: 1 / -1;
+}
+
+.booking-sheet.is-sending::after {
+  content: "Envoi du dossier…";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 252, 248, 0.88);
+  color: var(--ink);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

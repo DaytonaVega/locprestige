@@ -240,7 +240,7 @@ function renderFleet() {
         <div class="body">
           <p class="tag">${labels[v.category]}</p>
           <h3>${v.name}</h3>
-          <p class="meta">${v.seats} places · ${v.transmission} · ${v.fuel}${v.power ? ` · ${v.power}` : ""}</p>
+          <p class="meta">${v.seats} places · ${kmLabel(v.km)} · ${v.transmission} · ${v.fuel}${v.power ? ` · ${v.power}` : ""}</p>
           <p class="meta">${status.label}</p>
           <p class="more">Découvrir</p>
         </div>
@@ -687,6 +687,14 @@ document.addEventListener("dragstart", (e) => {
 
 const FILE_MAX = 8 * 1024 * 1024;
 const FILE_KEYS = ["permis_recto", "permis_verso", "piece_recto", "piece_verso"];
+const STEP_FIELDS = {
+  1: ["vehicule", "genre", "nom", "prenom", "date_naissance", "telephone", "email", "adresse", "code_postal", "ville"],
+  2: ["permis_numero", "permis_date", "permis_recto", "permis_verso", "type_piece", "piece_numero", "piece_recto", "piece_verso"],
+  3: ["consentement"],
+};
+
+let bookingStep = 1;
+const filePreviews = new Map();
 
 function isAdult(value) {
   const birth = parseDay(value);
@@ -714,6 +722,11 @@ function syncIdBack() {
     wrap.classList.remove("has-file");
     const name = wrap.querySelector("[data-file-name]");
     if (name) name.textContent = "Ajouter une photo";
+    const preview = wrap.querySelector("[data-file-preview]");
+    if (preview) {
+      preview.hidden = true;
+      preview.removeAttribute("src");
+    }
   }
 }
 
@@ -738,23 +751,57 @@ function bookingVehicleOptions(selected) {
   );
 }
 
-function resetBooking() {
-  if (!els.bookingForm) return;
-  els.bookingForm.reset();
-  els.bookingForm.querySelectorAll(".file-field").forEach((field) => {
+function setBookingStep(step) {
+  bookingStep = step;
+  els.bookingForm?.querySelectorAll(".booking-pane").forEach((pane) => {
+    pane.classList.toggle("is-on", Number(pane.dataset.pane) === step);
+  });
+  document.querySelectorAll("#bookingSteps li").forEach((item, index) => {
+    const n = index + 1;
+    item.classList.toggle("is-on", n === step);
+    item.classList.toggle("is-done", n < step);
+  });
+  const back = document.getElementById("bookingBack");
+  const next = document.getElementById("bookingNextBtn");
+  const submit = document.getElementById("bookingSubmit");
+  if (back) back.hidden = step === 1;
+  if (next) next.hidden = step === 3;
+  if (submit) submit.hidden = step !== 3;
+  if (els.bookingError) els.bookingError.textContent = "";
+  if (step === 3) fillSendRecap();
+  document.getElementById("bookingFormWrap")?.querySelector(".booking-head")?.scrollIntoView({ block: "nearest" });
+}
+
+function resetFileFields() {
+  els.bookingForm?.querySelectorAll(".file-field").forEach((field) => {
     field.classList.remove("has-file");
     const name = field.querySelector("[data-file-name]");
     if (name) name.textContent = "Ajouter une photo";
+    const preview = field.querySelector("[data-file-preview]");
+    if (preview) {
+      preview.hidden = true;
+      preview.removeAttribute("src");
+    }
   });
+  filePreviews.forEach((url) => URL.revokeObjectURL(url));
+  filePreviews.clear();
+}
+
+function resetBooking() {
+  if (!els.bookingForm) return;
+  els.bookingForm.reset();
+  resetFileFields();
   if (els.bookingError) els.bookingError.textContent = "";
   document.getElementById("bookingFormWrap").hidden = false;
   document.getElementById("bookingDone").hidden = true;
+  els.booking.querySelector(".booking-sheet")?.classList.remove("is-sending");
   const submit = document.getElementById("bookingSubmit");
   if (submit) {
     submit.disabled = false;
-    submit.textContent = "Envoyer la demande";
+    submit.textContent = "Envoyer le dossier";
   }
   syncIdBack();
+  setBookingStep(1);
 }
 
 function openBooking(vehicleId) {
@@ -799,7 +846,7 @@ async function compressImage(file) {
   }
   if (!file.type.startsWith("image/")) throw new Error("type");
   const bitmap = await createImageBitmap(file);
-  const max = 1600;
+  const max = 1400;
   const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -807,67 +854,100 @@ async function compressImage(file) {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close?.();
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.82));
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
   if (!blob) throw new Error("type");
   const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
   return new File([blob], name, { type: "image/jpeg" });
 }
 
-function missingRequired() {
-  const form = els.bookingForm;
-  const need = [
-    "genre",
-    "nom",
-    "prenom",
-    "date_naissance",
-    "telephone",
-    "email",
-    "adresse",
-    "code_postal",
-    "ville",
-    "permis_numero",
-    "permis_date",
-    "type_piece",
-    "piece_numero",
-  ];
-  if (need.some((name) => !String(form.elements[name].value || "").trim())) return true;
-  if (!form.elements.vehicule.value) return true;
-  if (!form.elements.consentement.checked) return true;
-  if (!form.elements.permis_recto.files[0] || !form.elements.permis_verso.files[0] || !form.elements.piece_recto.files[0]) {
-    return true;
-  }
-  if (!passportSelected() && !form.elements.piece_verso.files[0]) return true;
-  return false;
+function emptyField(name) {
+  const el = els.bookingForm.elements[name];
+  if (!el) return true;
+  if (el.type === "checkbox") return !el.checked;
+  if (el.type === "file") return !el.files[0];
+  return !String(el.value || "").trim();
 }
 
-function bookingMailto(v, form) {
-  const subject = encodeURIComponent(`Demande de location — ${v.name} — ${formatLong(state.from)} au ${formatLong(state.to)}`);
-  const body = encodeURIComponent(
-    `Demande de location KR Location\n\n` +
-      `Véhicule : ${v.name}\n` +
-      `Prise en charge : ${formatLong(state.from)}\n` +
-      `Retour : ${formatLong(state.to)}\n\n` +
-      `Genre : ${form.elements.genre.value}\n` +
-      `Nom : ${form.elements.nom.value.trim()}\n` +
-      `Prénom : ${form.elements.prenom.value.trim()}\n` +
-      `Date de naissance : ${form.elements.date_naissance.value}\n` +
-      `Téléphone : ${form.elements.telephone.value.trim()}\n` +
-      `E-mail : ${form.elements.email.value.trim()}\n` +
-      `Adresse : ${form.elements.adresse.value.trim()}\n` +
-      `Code postal : ${form.elements.code_postal.value.trim()}\n` +
-      `Ville : ${form.elements.ville.value.trim()}\n\n` +
-      `N° de permis : ${form.elements.permis_numero.value.trim()}\n` +
-      `Date d’obtention : ${form.elements.permis_date.value}\n` +
-      `Pièce : ${form.elements.type_piece.value} ${form.elements.piece_numero.value.trim()}\n\n` +
-      `Message : ${form.elements.message.value.trim() || "—"}\n\n` +
-      `Les photos du permis et de la pièce d’identité sont à joindre à cet e-mail.\n`
-  );
-  return `mailto:${CONTACT.email}?subject=${subject}&body=${body}`;
+function stepIncomplete(step) {
+  return STEP_FIELDS[step].some((name) => {
+    if (name === "piece_verso" && passportSelected()) return false;
+    return emptyField(name);
+  });
+}
+
+function missingRequired() {
+  return [1, 2, 3].some(stepIncomplete);
+}
+
+function fillSendRecap() {
+  const box = document.getElementById("bookingSendRecap");
+  if (!box || !els.bookingForm) return;
+  const form = els.bookingForm;
+  const v = VEHICLES.find((item) => item.id === form.elements.vehicule.value);
+  const files = FILE_KEYS.filter((key) => {
+    if (key === "piece_verso" && passportSelected()) return false;
+    return Boolean(form.elements[key]?.files[0]);
+  }).length;
+  const driver = [form.elements.prenom.value, form.elements.nom.value].filter(Boolean).join(" ");
+  box.innerHTML = `
+    <li><span>Véhicule</span><strong>${v ? v.name : "—"}</strong></li>
+    <li><span>Dates</span><strong>${state.from && state.to ? `${formatLong(state.from)} → ${formatLong(state.to)}` : "—"}</strong></li>
+    <li><span>Conducteur</span><strong>${driver || "—"}</strong></li>
+    <li><span>Pièces jointes</span><strong>${files} photo${files > 1 ? "s" : ""} — permis et pièce d’identité</strong></li>
+    <li><span>Destination</span><strong>E-mail de KR Location</strong></li>
+  `;
+}
+
+function dossierReturnUrl() {
+  const url = new URL(location.href);
+  url.searchParams.set("dossier", "ok");
+  url.hash = "";
+  return url.toString();
+}
+
+function showDossierToast() {
+  const toast = document.getElementById("dossierToast");
+  if (!toast) return;
+  toast.hidden = false;
+  window.setTimeout(() => {
+    toast.hidden = true;
+  }, 7000);
 }
 
 function showBookingDone() {
   document.getElementById("bookingFormWrap").hidden = true;
   document.getElementById("bookingDone").hidden = false;
+}
+
+function putFile(input, file) {
+  const data = new DataTransfer();
+  data.items.add(file);
+  input.files = data.files;
+}
+
+function prepareMailFields(v, form) {
+  const subject = `Demande de location — ${v.name} — ${formatLong(state.from)} au ${formatLong(state.to)}`;
+  const reply = form.elements.email.value.trim();
+  const subjectEl = document.getElementById("bookingSubject");
+  const replyEl = document.getElementById("bookingReplyto");
+  const nextEl = document.getElementById("bookingNext");
+  const autoEl = document.getElementById("bookingAutoresponse");
+  const fromEl = document.getElementById("bookingFromField");
+  const toEl = document.getElementById("bookingToField");
+  const nameEl = document.getElementById("bookingVehicleName");
+  if (subjectEl) subjectEl.value = subject;
+  if (replyEl) replyEl.value = reply;
+  if (nextEl) nextEl.value = dossierReturnUrl();
+  if (fromEl) fromEl.value = formatLong(state.from);
+  if (toEl) toEl.value = formatLong(state.to);
+  if (nameEl) nameEl.value = v.name;
+  if (autoEl) {
+    autoEl.value =
+      `Bonjour,\n\nNous avons bien reçu votre dossier KR Location (permis et pièce d’identité) pour la ${v.name} du ${formatLong(state.from)} au ${formatLong(state.to)}.\n\nCe n’est pas encore une confirmation. On vous écrit pour valider les dates et fixer la remise des clés.`;
+  }
+  form.action = `https://formsubmit.co/${encodeURIComponent(CONTACT.email)}`;
+  form.method = "POST";
+  form.enctype = "multipart/form-data";
 }
 
 async function submitBooking(e) {
@@ -876,6 +956,10 @@ async function submitBooking(e) {
   els.bookingError.textContent = "";
   if (form.elements._honey.value) {
     showBookingDone();
+    return;
+  }
+  if (bookingStep < 3) {
+    goBookingNext();
     return;
   }
   if (!state.from || !state.to) {
@@ -887,6 +971,7 @@ async function submitBooking(e) {
   const v = VEHICLES.find((item) => item.id === vehicleId);
   if (!v) {
     els.bookingError.textContent = "Choisissez un véhicule.";
+    setBookingStep(1);
     return;
   }
   if (rangeBusy(v, state.from, state.to)) {
@@ -895,38 +980,21 @@ async function submitBooking(e) {
   }
   if (missingRequired()) {
     els.bookingError.textContent = "Remplissez toutes les informations et ajoutez les photos du permis et de la pièce d’identité.";
+    if (stepIncomplete(1)) setBookingStep(1);
+    else if (stepIncomplete(2)) setBookingStep(2);
     return;
   }
   if (!isAdult(form.elements.date_naissance.value)) {
     els.bookingError.textContent = "Le conducteur doit avoir au moins 18 ans.";
+    setBookingStep(1);
     return;
   }
   const submit = document.getElementById("bookingSubmit");
+  const sheet = form.closest(".booking-sheet");
   submit.disabled = true;
   submit.textContent = "Envoi…";
+  sheet?.classList.add("is-sending");
   try {
-    const data = new FormData();
-    data.append("_subject", `Demande de location — ${v.name} — ${formatLong(state.from)} au ${formatLong(state.to)}`);
-    data.append("_template", "table");
-    data.append("_captcha", "false");
-    data.append("_replyto", form.elements.email.value.trim());
-    data.append("Vehicule", v.name);
-    data.append("Prise_en_charge", formatLong(state.from));
-    data.append("Retour", formatLong(state.to));
-    data.append("Genre", form.elements.genre.value);
-    data.append("Nom", form.elements.nom.value.trim());
-    data.append("Prenom", form.elements.prenom.value.trim());
-    data.append("Date_de_naissance", form.elements.date_naissance.value);
-    data.append("Telephone", form.elements.telephone.value.trim());
-    data.append("Email", form.elements.email.value.trim());
-    data.append("Adresse", form.elements.adresse.value.trim());
-    data.append("Code_postal", form.elements.code_postal.value.trim());
-    data.append("Ville", form.elements.ville.value.trim());
-    data.append("Permis_numero", form.elements.permis_numero.value.trim());
-    data.append("Permis_date", form.elements.permis_date.value);
-    data.append("Type_de_piece", form.elements.type_piece.value);
-    data.append("Piece_numero", form.elements.piece_numero.value.trim());
-    data.append("Message", form.elements.message.value.trim() || "—");
     for (const key of FILE_KEYS) {
       const file = form.elements[key].files[0];
       if (!file) {
@@ -934,41 +1002,97 @@ async function submitBooking(e) {
         throw new Error("files");
       }
       if (file.size > FILE_MAX) throw new Error("size");
-      const ready = await compressImage(file);
-      data.append(key, ready, ready.name);
+      putFile(form.elements[key], await compressImage(file));
     }
+    prepareMailFields(v, form);
+    const data = new FormData(form);
+    data.delete("_honey");
     const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONTACT.email)}`, {
       method: "POST",
       body: data,
       headers: { Accept: "application/json" },
     });
     const json = await res.json().catch(() => ({}));
-    const ok = res.ok || json.success === true || json.success === "true";
-    if (!ok) throw new Error("send");
-    showBookingDone();
+    const ok = res.ok && (json.success === true || json.success === "true");
+    if (ok) {
+      showBookingDone();
+      return;
+    }
+    form.submit();
   } catch (err) {
-    window.location.href = bookingMailto(v, form);
-    els.bookingError.textContent =
-      "L’envoi automatique n’a pas abouti. Votre messagerie s’ouvre : joignez-y les photos du permis et de la pièce d’identité.";
+    if (err?.message === "size") {
+      els.bookingError.textContent = "Un fichier dépasse 8 Mo. Compressez-le ou prenez une photo plus légère.";
+      setBookingStep(2);
+    } else {
+      prepareMailFields(v, form);
+      form.submit();
+      return;
+    }
   } finally {
     submit.disabled = false;
-    submit.textContent = "Envoyer la demande";
+    submit.textContent = "Envoyer le dossier";
+    sheet?.classList.remove("is-sending");
+  }
+}
+
+function goBookingNext() {
+  if (bookingStep === 1) {
+    if (stepIncomplete(1)) {
+      els.bookingError.textContent = "Complétez l’identité et le véhicule.";
+      return;
+    }
+    if (!isAdult(els.bookingForm.elements.date_naissance.value)) {
+      els.bookingError.textContent = "Le conducteur doit avoir au moins 18 ans.";
+      return;
+    }
+    setBookingStep(2);
+    return;
+  }
+  if (bookingStep === 2) {
+    if (stepIncomplete(2)) {
+      els.bookingError.textContent = "Ajoutez le permis (recto et verso) et la pièce d’identité.";
+      return;
+    }
+    setBookingStep(3);
+  }
+}
+
+function markFileField(input) {
+  const field = input.closest(".file-field");
+  const file = input.files[0];
+  const name = field?.querySelector("[data-file-name]");
+  const preview = field?.querySelector("[data-file-preview]");
+  if (filePreviews.has(input)) {
+    URL.revokeObjectURL(filePreviews.get(input));
+    filePreviews.delete(input);
+  }
+  if (file && file.size > FILE_MAX) {
+    input.value = "";
+    if (name) name.textContent = "Fichier trop lourd (8 Mo max)";
+    field?.classList.remove("has-file");
+    if (preview) {
+      preview.hidden = true;
+      preview.removeAttribute("src");
+    }
+    return;
+  }
+  if (name) name.textContent = file ? file.name : "Ajouter une photo";
+  field?.classList.toggle("has-file", Boolean(file));
+  if (preview) {
+    if (file && file.type.startsWith("image/")) {
+      const url = URL.createObjectURL(file);
+      filePreviews.set(input, url);
+      preview.src = url;
+      preview.hidden = false;
+    } else {
+      preview.hidden = true;
+      preview.removeAttribute("src");
+    }
   }
 }
 
 els.bookingForm?.querySelectorAll("input[type=file]").forEach((input) => {
-  input.addEventListener("change", () => {
-    const field = input.closest(".file-field");
-    const file = input.files[0];
-    const name = field?.querySelector("[data-file-name]");
-    if (name) name.textContent = file ? file.name : "Ajouter une photo";
-    field?.classList.toggle("has-file", Boolean(file));
-    if (file && file.size > FILE_MAX) {
-      input.value = "";
-      if (name) name.textContent = "Fichier trop lourd (8 Mo max)";
-      field?.classList.remove("has-file");
-    }
-  });
+  input.addEventListener("change", () => markFileField(input));
 });
 
 els.bookingForm?.elements.vehicule?.addEventListener("change", () => {
@@ -978,6 +1102,8 @@ els.bookingForm?.elements.vehicule?.addEventListener("change", () => {
 
 els.bookingForm?.elements.type_piece?.addEventListener("change", syncIdBack);
 els.bookingForm?.addEventListener("submit", submitBooking);
+document.getElementById("bookingNextBtn")?.addEventListener("click", goBookingNext);
+document.getElementById("bookingBack")?.addEventListener("click", () => setBookingStep(Math.max(1, bookingStep - 1)));
 document.getElementById("bookingClose")?.addEventListener("click", () => els.booking.close());
 document.getElementById("bookingDoneClose")?.addEventListener("click", () => els.booking.close());
 els.booking?.addEventListener("click", (e) => {
@@ -989,6 +1115,13 @@ document.getElementById("bookingCta")?.addEventListener("click", (e) => {
   e.stopPropagation();
   openBooking(state.vehicleId);
 });
+
+if (new URLSearchParams(location.search).get("dossier") === "ok") {
+  showDossierToast();
+  const clean = new URL(location.href);
+  clean.searchParams.delete("dossier");
+  history.replaceState({}, "", clean.pathname + clean.search + clean.hash);
+}
 
 syncDateInputs();
 fillContacts();
