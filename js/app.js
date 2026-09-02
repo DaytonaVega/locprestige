@@ -773,6 +773,7 @@ function resetFileFields() {
 
 function resetBooking() {
   if (!els.bookingForm) return;
+  stripLegacyBookingFields();
   els.bookingForm.reset();
   resetFileFields();
   if (els.bookingError) els.bookingError.textContent = "";
@@ -842,10 +843,35 @@ async function compressImage(file) {
 
 function emptyField(name) {
   const el = els.bookingForm.elements[name];
-  if (!el) return true;
+  if (!el) return false;
   if (el.type === "checkbox") return !el.checked;
   if (el.type === "file") return !el.files[0];
   return !String(el.value || "").trim();
+}
+
+function stripLegacyBookingFields() {
+  const form = els.bookingForm;
+  if (!form) return;
+  const kill = [
+    "permis_numero",
+    "permis_date",
+    "genre",
+    "date_naissance",
+    "email",
+    "code_postal",
+    "ville",
+    "type_piece",
+    "piece_numero",
+    "piece_recto",
+    "piece_verso",
+    "consentement",
+  ];
+  for (const name of kill) {
+    const el = form.elements[name];
+    if (!el) continue;
+    el.required = false;
+    el.closest("label, .field, .file-field, .check")?.remove();
+  }
 }
 
 function stepIncomplete(step) {
