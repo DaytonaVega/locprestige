@@ -704,49 +704,14 @@ document.addEventListener("dragstart", (e) => {
 });
 
 const FILE_MAX = 8 * 1024 * 1024;
-const FILE_KEYS = ["permis_recto", "permis_verso", "piece_recto", "piece_verso"];
+const FILE_KEYS = ["permis_recto", "permis_verso"];
 const STEP_FIELDS = {
-  1: ["vehicule", "genre", "nom", "prenom", "date_naissance", "telephone", "email", "adresse", "code_postal", "ville"],
-  2: ["permis_numero", "permis_date", "permis_recto", "permis_verso", "type_piece", "piece_numero", "piece_recto", "piece_verso"],
-  3: ["consentement"],
+  1: ["vehicule", "nom", "prenom", "telephone", "adresse"],
+  2: ["permis_recto", "permis_verso"],
 };
 
 let bookingStep = 1;
 const filePreviews = new Map();
-
-function isAdult(value) {
-  const birth = parseDay(value);
-  const today = parseDay(iso(new Date()));
-  if (!birth || !today) return false;
-  let age = today.getFullYear() - birth.getFullYear();
-  const month = today.getMonth() - birth.getMonth();
-  if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) age -= 1;
-  return age >= 18;
-}
-
-function passportSelected() {
-  return els.bookingForm?.elements.type_piece.value === "Passeport";
-}
-
-function syncIdBack() {
-  const wrap = document.getElementById("bookingIdBack");
-  const input = els.bookingForm?.elements.piece_verso;
-  if (!wrap || !input) return;
-  const hide = passportSelected();
-  wrap.hidden = hide;
-  input.required = !hide;
-  if (hide) {
-    input.value = "";
-    wrap.classList.remove("has-file");
-    const name = wrap.querySelector("[data-file-name]");
-    if (name) name.textContent = "Ajouter une photo";
-    const preview = wrap.querySelector("[data-file-preview]");
-    if (preview) {
-      preview.hidden = true;
-      preview.removeAttribute("src");
-    }
-  }
-}
 
 function fillBookingRecap() {
   if (!els.bookingRecap) return;
@@ -770,6 +735,7 @@ function bookingVehicleOptions(selected) {
 }
 
 function setBookingStep(step) {
+  const changed = bookingStep !== step;
   bookingStep = step;
   els.bookingForm?.querySelectorAll(".booking-pane").forEach((pane) => {
     pane.classList.toggle("is-on", Number(pane.dataset.pane) === step);
@@ -783,10 +749,10 @@ function setBookingStep(step) {
   const next = document.getElementById("bookingNextBtn");
   const submit = document.getElementById("bookingSubmit");
   if (back) back.hidden = step === 1;
-  if (next) next.hidden = step === 3;
-  if (submit) submit.hidden = step !== 3;
-  if (els.bookingError) els.bookingError.textContent = "";
-  if (step === 3) fillSendRecap();
+  if (next) next.hidden = step === 2;
+  if (submit) submit.hidden = step !== 2;
+  if (changed && els.bookingError) els.bookingError.textContent = "";
+  if (step === 2) fillSendRecap();
   document.getElementById("bookingFormWrap")?.querySelector(".booking-head")?.scrollIntoView({ block: "nearest" });
 }
 
@@ -818,7 +784,6 @@ function resetBooking() {
     submit.disabled = false;
     submit.textContent = "Envoyer le dossier";
   }
-  syncIdBack();
   setBookingStep(1);
 }
 
@@ -848,9 +813,6 @@ function openBooking(vehicleId) {
   if (els.bookingForm) {
     els.bookingForm.elements.vehicule_id.value = chosen;
     if (chosen) els.bookingForm.elements.vehicule.value = chosen;
-    const today = iso(new Date());
-    els.bookingForm.elements.date_naissance.max = today;
-    els.bookingForm.elements.permis_date.max = today;
   }
   fillBookingRecap();
   if (els.modal?.open) els.modal.close();
@@ -887,14 +849,11 @@ function emptyField(name) {
 }
 
 function stepIncomplete(step) {
-  return STEP_FIELDS[step].some((name) => {
-    if (name === "piece_verso" && passportSelected()) return false;
-    return emptyField(name);
-  });
+  return STEP_FIELDS[step].some((name) => emptyField(name));
 }
 
 function missingRequired() {
-  return [1, 2, 3].some(stepIncomplete);
+  return [1, 2].some(stepIncomplete);
 }
 
 function fillSendRecap() {
@@ -902,16 +861,17 @@ function fillSendRecap() {
   if (!box || !els.bookingForm) return;
   const form = els.bookingForm;
   const v = VEHICLES.find((item) => item.id === form.elements.vehicule.value);
-  const files = FILE_KEYS.filter((key) => {
-    if (key === "piece_verso" && passportSelected()) return false;
-    return Boolean(form.elements[key]?.files[0]);
-  }).length;
+  const files = FILE_KEYS.filter((key) => Boolean(form.elements[key]?.files[0])).length;
   const driver = [form.elements.prenom.value, form.elements.nom.value].filter(Boolean).join(" ");
+  const phone = form.elements.telephone.value.trim();
+  const address = form.elements.adresse.value.trim();
   box.innerHTML = `
     <li><span>Véhicule</span><strong>${v ? v.name : "—"}</strong></li>
     <li><span>Dates</span><strong>${state.from && state.to ? `${formatLong(state.from)} → ${formatLong(state.to)}` : "—"}</strong></li>
     <li><span>Conducteur</span><strong>${driver || "—"}</strong></li>
-    <li><span>Pièces jointes</span><strong>${files} photo${files > 1 ? "s" : ""} — permis et pièce d’identité</strong></li>
+    <li><span>Téléphone</span><strong>${phone || "—"}</strong></li>
+    <li><span>Adresse</span><strong>${address || "—"}</strong></li>
+    <li><span>Pièces jointes</span><strong>${files} photo${files > 1 ? "s" : ""} — permis recto et verso</strong></li>
     <li><span>Destination</span><strong>E-mail de KR Location</strong></li>
   `;
 }
@@ -945,24 +905,16 @@ function putFile(input, file) {
 
 function prepareMailFields(v, form) {
   const subject = `Demande de location — ${v.name} — ${formatLong(state.from)} au ${formatLong(state.to)}`;
-  const reply = form.elements.email.value.trim();
   const subjectEl = document.getElementById("bookingSubject");
-  const replyEl = document.getElementById("bookingReplyto");
   const nextEl = document.getElementById("bookingNext");
-  const autoEl = document.getElementById("bookingAutoresponse");
   const fromEl = document.getElementById("bookingFromField");
   const toEl = document.getElementById("bookingToField");
   const nameEl = document.getElementById("bookingVehicleName");
   if (subjectEl) subjectEl.value = subject;
-  if (replyEl) replyEl.value = reply;
   if (nextEl) nextEl.value = dossierReturnUrl();
   if (fromEl) fromEl.value = formatLong(state.from);
   if (toEl) toEl.value = formatLong(state.to);
   if (nameEl) nameEl.value = v.name;
-  if (autoEl) {
-    autoEl.value =
-      `Bonjour,\n\nNous avons bien reçu votre dossier KR Location (permis et pièce d’identité) pour la ${v.name} du ${formatLong(state.from)} au ${formatLong(state.to)}.\n\nCe n’est pas encore une confirmation. On vous écrit pour valider les dates et fixer la remise des clés.`;
-  }
   form.action = `https://formsubmit.co/${encodeURIComponent(CONTACT.email)}`;
   form.method = "POST";
   form.enctype = "multipart/form-data";
@@ -976,7 +928,7 @@ async function submitBooking(e) {
     showBookingDone();
     return;
   }
-  if (bookingStep < 3) {
+  if (bookingStep < 2) {
     goBookingNext();
     return;
   }
@@ -988,8 +940,8 @@ async function submitBooking(e) {
   form.elements.vehicule_id.value = vehicleId;
   const v = VEHICLES.find((item) => item.id === vehicleId);
   if (!v) {
-    els.bookingError.textContent = "Choisissez un véhicule.";
     setBookingStep(1);
+    els.bookingError.textContent = "Choisissez un véhicule.";
     return;
   }
   if (rangeBusy(v, state.from, state.to)) {
@@ -997,14 +949,9 @@ async function submitBooking(e) {
     return;
   }
   if (missingRequired()) {
-    els.bookingError.textContent = "Remplissez toutes les informations et ajoutez les photos du permis et de la pièce d’identité.";
     if (stepIncomplete(1)) setBookingStep(1);
     else if (stepIncomplete(2)) setBookingStep(2);
-    return;
-  }
-  if (!isAdult(form.elements.date_naissance.value)) {
-    els.bookingError.textContent = "Le conducteur doit avoir au moins 18 ans.";
-    setBookingStep(1);
+    els.bookingError.textContent = "Remplissez les infos et ajoutez les photos du permis, recto et verso.";
     return;
   }
   const submit = document.getElementById("bookingSubmit");
@@ -1015,10 +962,7 @@ async function submitBooking(e) {
   try {
     for (const key of FILE_KEYS) {
       const file = form.elements[key].files[0];
-      if (!file) {
-        if (key === "piece_verso" && passportSelected()) continue;
-        throw new Error("files");
-      }
+      if (!file) throw new Error("files");
       if (file.size > FILE_MAX) throw new Error("size");
       putFile(form.elements[key], await compressImage(file));
     }
@@ -1039,8 +983,8 @@ async function submitBooking(e) {
     form.submit();
   } catch (err) {
     if (err?.message === "size") {
-      els.bookingError.textContent = "Un fichier dépasse 8 Mo. Compressez-le ou prenez une photo plus légère.";
       setBookingStep(2);
+      els.bookingError.textContent = "Un fichier dépasse 8 Mo. Compressez-le ou prenez une photo plus légère.";
     } else {
       prepareMailFields(v, form);
       form.submit();
@@ -1059,19 +1003,7 @@ function goBookingNext() {
       els.bookingError.textContent = "Complétez l’identité et le véhicule.";
       return;
     }
-    if (!isAdult(els.bookingForm.elements.date_naissance.value)) {
-      els.bookingError.textContent = "Le conducteur doit avoir au moins 18 ans.";
-      return;
-    }
     setBookingStep(2);
-    return;
-  }
-  if (bookingStep === 2) {
-    if (stepIncomplete(2)) {
-      els.bookingError.textContent = "Ajoutez le permis (recto et verso) et la pièce d’identité.";
-      return;
-    }
-    setBookingStep(3);
   }
 }
 
@@ -1107,6 +1039,7 @@ function markFileField(input) {
       preview.removeAttribute("src");
     }
   }
+  if (bookingStep === 2) fillSendRecap();
 }
 
 els.bookingForm?.querySelectorAll("input[type=file]").forEach((input) => {
@@ -1118,7 +1051,6 @@ els.bookingForm?.elements.vehicule?.addEventListener("change", () => {
   fillBookingRecap();
 });
 
-els.bookingForm?.elements.type_piece?.addEventListener("change", syncIdBack);
 els.bookingForm?.addEventListener("submit", submitBooking);
 document.getElementById("bookingNextBtn")?.addEventListener("click", goBookingNext);
 document.getElementById("bookingBack")?.addEventListener("click", () => setBookingStep(Math.max(1, bookingStep - 1)));

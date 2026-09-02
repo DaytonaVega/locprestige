@@ -7,7 +7,7 @@
     <title>KR Location — Louez l’exception.</title>
     <meta
       name="description"
-      content="Location de voitures prestige. Dossier en ligne avec permis et pièce d’identité, envoyé sur l’e-mail de KR Location. Remise des clés sur rendez-vous."
+      content="Location de voitures prestige. Dossier en ligne : nom, téléphone, adresse et photos du permis, envoyé sur l’e-mail de KR Location. Remise des clés sur rendez-vous."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,12 +16,12 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="images/logo.png?v=51" />
-    <link rel="stylesheet" href="css/styles.css?v=51" />
+    <link rel="stylesheet" href="css/styles.css?v=53" />
   </head>
   <body>
     <div class="toast" id="dossierToast" hidden>
       <strong>Dossier reçu.</strong>
-      <span>Permis et pièce d’identité sont arrivés sur l’e-mail de KR Location.</span>
+      <span>Nom, téléphone, adresse et photos du permis sont arrivés sur l’e-mail de KR Location.</span>
     </div>
     <div class="loader" id="pageLoader" aria-hidden="true">
       <img src="images/logo.png?v=51" alt="" />
@@ -65,7 +65,7 @@
           <h1>Louez<br /><em>l’exception.</em></h1>
           <p class="hero-lead">
             Une flotte choisie, une remise des clés sur rendez-vous.
-            Le dossier part directement sur l’e-mail de l’agence, avec permis et pièce d’identité.
+            Le dossier part directement sur l’e-mail de l’agence : nom, téléphone, adresse et photos du permis.
           </p>
           <ul class="hero-facts">
             <li><span>Flotte</span><strong id="heroFleet"></strong></li>
@@ -116,7 +116,7 @@
         <article data-reveal>
           <span>03</span>
           <h2>Déposez votre dossier</h2>
-          <p>Identité, photos du permis et de la pièce. Le dossier arrive directement sur l’e-mail de KR Location.</p>
+          <p>Identité et photos du permis, recto et verso. Le dossier arrive directement sur l’e-mail de KR Location.</p>
         </article>
       </div>
     </section>
@@ -187,7 +187,7 @@
           </article>
           <article data-reveal>
             <h3>Demande de réservation</h3>
-            <p>La demande part sur l’e-mail de KR Location, avec vos photos de permis et de pièce d’identité. On vous répond pour confirmer.</p>
+            <p>La demande part sur l’e-mail de KR Location, avec vos photos de permis. On vous répond pour confirmer.</p>
           </article>
         </div>
       </div>
@@ -202,7 +202,7 @@
         <div class="faq-list" data-reveal>
           <details open>
             <summary>Comment réserver ?</summary>
-            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis déposez votre dossier. Permis et pièce d’identité partent avec la demande, sur l’e-mail de l’agence.</p>
+            <p>Choisissez vos dates, ouvrez la fiche du véhicule, puis déposez votre dossier. Nom, téléphone, adresse et photos du permis partent sur l’e-mail de l’agence.</p>
           </details>
           <details>
             <summary>Comment récupérer la voiture ?</summary>
@@ -213,8 +213,8 @@
             <p>Après le dossier, on vous écrit pour valider les dates et fixer la remise des clés.</p>
           </details>
           <details>
-            <summary>Où va mon permis et ma pièce d’identité ?</summary>
-            <p>Ils sont envoyés avec le formulaire, en pièce jointe, sur l’e-mail de KR Location. Uniquement pour traiter la demande.</p>
+            <summary>Où vont mes photos de permis ?</summary>
+            <p>Elles sont envoyées avec le formulaire, en pièce jointe, sur l’e-mail de KR Location. Uniquement pour traiter la demande.</p>
           </details>
           <details>
             <summary>La caution, c’est obligatoire ?</summary>
@@ -258,7 +258,7 @@
       <div class="wrap cta-inner" data-reveal>
         <p class="eyebrow">Réserver</p>
         <h2>Déposez votre dossier.</h2>
-        <p>Identité, permis et pièce d’identité. Tout part sur l’e-mail de l’agence. On vous confirme ensuite.</p>
+        <p>Nom, téléphone, adresse et photos du permis. Tout part sur l’e-mail de l’agence. On vous confirme ensuite.</p>
         <div class="cta-actions">
           <button class="btn btn-gold" type="button" id="bookingCta">Réserver</button>
           <a class="btn btn-light" href="#flotte">Voir la flotte</a>
@@ -343,8 +343,7 @@
           </header>
           <ol class="booking-steps" id="bookingSteps">
             <li class="is-on"><span>01</span> Identité</li>
-            <li><span>02</span> Pièces</li>
-            <li><span>03</span> Envoi</li>
+            <li><span>02</span> Permis</li>
           </ol>
           <form
             class="booking-form"
@@ -358,9 +357,7 @@
             <input type="hidden" name="_captcha" value="false" />
             <input type="hidden" name="_template" value="table" />
             <input type="hidden" name="_subject" id="bookingSubject" />
-            <input type="hidden" name="_replyto" id="bookingReplyto" />
             <input type="hidden" name="_next" id="bookingNext" />
-            <input type="hidden" name="_autoresponse" id="bookingAutoresponse" />
             <input type="hidden" name="vehicule_id" id="bookingVehicleId" />
             <input type="hidden" name="Prise_en_charge" id="bookingFromField" />
             <input type="hidden" name="Retour" id="bookingToField" />
@@ -381,15 +378,6 @@
               <p class="booking-kicker">Conducteur</p>
               <div class="booking-grid">
                 <label class="field">
-                  <span>Genre</span>
-                  <select name="genre" required>
-                    <option value="">Choisir</option>
-                    <option value="Homme">Homme</option>
-                    <option value="Femme">Femme</option>
-                    <option value="Autre">Autre</option>
-                  </select>
-                </label>
-                <label class="field">
                   <span>Nom</span>
                   <input type="text" name="nom" autocomplete="family-name" required />
                 </label>
@@ -398,101 +386,35 @@
                   <input type="text" name="prenom" autocomplete="given-name" required />
                 </label>
                 <label class="field">
-                  <span>Date de naissance</span>
-                  <input type="date" name="date_naissance" autocomplete="bday" required />
-                </label>
-                <label class="field">
                   <span>Téléphone</span>
                   <input type="tel" name="telephone" autocomplete="tel" inputmode="tel" required />
-                </label>
-                <label class="field">
-                  <span>E-mail</span>
-                  <input type="email" name="email" autocomplete="email" required />
                 </label>
                 <label class="field is-full">
                   <span>Adresse</span>
                   <input type="text" name="adresse" autocomplete="street-address" required />
                 </label>
-                <label class="field">
-                  <span>Code postal</span>
-                  <input type="text" name="code_postal" autocomplete="postal-code" inputmode="numeric" required />
-                </label>
-                <label class="field">
-                  <span>Ville</span>
-                  <input type="text" name="ville" autocomplete="address-level2" required />
-                </label>
               </div>
             </div>
 
             <div class="booking-pane" data-pane="2">
-              <p class="booking-note">Photos nettes, recto et verso. Elles partent en pièce jointe sur l’e-mail de KR Location.</p>
+              <p class="booking-note">Deux photos nettes du permis, recto et verso. Elles partent en pièce jointe sur l’e-mail de KR Location.</p>
               <p class="booking-kicker">Permis de conduire</p>
               <div class="booking-grid">
-                <label class="field">
-                  <span>N° de permis</span>
-                  <input type="text" name="permis_numero" required />
-                </label>
-                <label class="field">
-                  <span>Date d’obtention</span>
-                  <input type="date" name="permis_date" required />
-                </label>
                 <label class="file-field">
-                  <input type="file" name="permis_recto" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required />
+                  <input type="file" name="permis_recto" accept="image/jpeg,image/png,image/webp,image/heic" required />
                   <span>Permis — recto</span>
                   <strong data-file-name>Ajouter une photo</strong>
                   <img data-file-preview alt="" hidden />
                 </label>
                 <label class="file-field">
-                  <input type="file" name="permis_verso" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required />
+                  <input type="file" name="permis_verso" accept="image/jpeg,image/png,image/webp,image/heic" required />
                   <span>Permis — verso</span>
                   <strong data-file-name>Ajouter une photo</strong>
                   <img data-file-preview alt="" hidden />
                 </label>
               </div>
-
-              <p class="booking-kicker">Pièce d’identité</p>
-              <div class="booking-grid">
-                <label class="field">
-                  <span>Type de pièce</span>
-                  <select name="type_piece" id="bookingIdType" required>
-                    <option value="">Choisir</option>
-                    <option value="Carte d'identite">Carte d’identité</option>
-                    <option value="Passeport">Passeport</option>
-                  </select>
-                </label>
-                <label class="field">
-                  <span>N° de la pièce</span>
-                  <input type="text" name="piece_numero" required />
-                </label>
-                <label class="file-field">
-                  <input type="file" name="piece_recto" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required />
-                  <span>Pièce — recto</span>
-                  <strong data-file-name>Ajouter une photo</strong>
-                  <img data-file-preview alt="" hidden />
-                </label>
-                <label class="file-field" id="bookingIdBack">
-                  <input type="file" name="piece_verso" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required />
-                  <span>Pièce — verso</span>
-                  <strong data-file-name>Ajouter une photo</strong>
-                  <img data-file-preview alt="" hidden />
-                </label>
-              </div>
-            </div>
-
-            <div class="booking-pane" data-pane="3">
               <p class="booking-kicker">Récapitulatif</p>
               <ul class="booking-send-recap" id="bookingSendRecap"></ul>
-              <p class="booking-kicker">Message</p>
-              <div class="booking-grid">
-                <label class="field is-full">
-                  <span>Précision (facultatif)</span>
-                  <textarea name="message" rows="3"></textarea>
-                </label>
-                <label class="check is-full">
-                  <input type="checkbox" name="consentement" required />
-                  <span>J’accepte que KR Location reçoive mes informations et mes pièces (permis et pièce d’identité) par e-mail, uniquement pour traiter cette demande de réservation.</span>
-                </label>
-              </div>
             </div>
 
             <p class="booking-error" id="bookingError" role="alert"></p>
@@ -500,20 +422,20 @@
               <button class="btn btn-ghost-dark" type="button" id="bookingBack" hidden>Retour</button>
               <button class="btn" type="button" id="bookingNextBtn">Continuer</button>
               <button class="btn btn-gold" type="submit" id="bookingSubmit" hidden>Envoyer le dossier</button>
-              <p class="booking-legal">Permis et pièce d’identité partent avec la demande, sur l’e-mail de KR Location. Ce n’est pas encore une confirmation.</p>
+              <p class="booking-legal">Nom, téléphone, adresse et photos du permis partent sur l’e-mail de KR Location. Ce n’est pas encore une confirmation.</p>
             </div>
           </form>
         </div>
         <div class="booking-done" id="bookingDone" hidden>
           <p class="eyebrow">Dossier reçu</p>
           <h2>Tout est arrivé sur l’e-mail de KR Location.</h2>
-          <p>Permis, pièce d’identité et vos informations. On vous écrit pour confirmer les dates et fixer la remise des clés.</p>
+          <p>Nom, téléphone, adresse et photos du permis. On vous écrit pour confirmer les dates et fixer la remise des clés.</p>
           <button class="btn" type="button" id="bookingDoneClose">Fermer</button>
         </div>
       </article>
     </dialog>
 
-    <script src="js/vehicles.js?v=51"></script>
-    <script src="js/app.js?v=51"></script>
+    <script src="js/vehicles.js?v=53"></script>
+    <script src="js/app.js?v=53"></script>
   </body>
 </html>
