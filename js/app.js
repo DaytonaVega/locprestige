@@ -125,6 +125,10 @@ function vehicleStatus(v) {
       const current = bookedRanges(v).find((b) => parseDay(iso(new Date())) >= b.from && parseDay(iso(new Date())) <= b.to);
       const overlapsNow = current && parseDay(state.from) <= current.to && parseDay(state.to) >= current.from;
       if (overlapsNow) {
+        const today = iso(new Date());
+        if (current && iso(current.to) === today) {
+          return { kind: "soon", badge: "Dispo demain", label: "Disponible à partir de demain" };
+        }
         return {
           kind: "out",
           badge: "En location",
@@ -136,6 +140,10 @@ function vehicleStatus(v) {
   }
   if (isBusyNow(v)) {
     const current = bookedRanges(v).find((b) => parseDay(iso(new Date())) >= b.from && parseDay(iso(new Date())) <= b.to);
+    const today = iso(new Date());
+    if (current && iso(current.to) === today) {
+      return { kind: "soon", badge: "Dispo demain", label: "Disponible à partir de demain" };
+    }
     return {
       kind: "out",
       badge: "En location",
@@ -228,13 +236,14 @@ function renderFleet() {
   }
 
   els.vehicleGrid.innerHTML = items
-    .map((v) => {
+    .map((v, i) => {
       const status = vehicleStatus(v);
+      const featured = state.category === "all" && i === 0 ? " is-featured" : "";
       return `
-      <article class="card${v.photoFit === "contain" ? " photo-contain" : ""}" data-open="${v.id}" data-reveal>
+      <article class="card${v.photoFit === "contain" ? " photo-contain" : ""}${featured}" data-open="${v.id}" data-reveal>
         <div class="media">
           <img src="${v.image}" alt="${v.name}" loading="lazy" draggable="false" />
-          <p class="status-badge${status.kind === "out" ? " is-out" : status.kind === "reserved" ? " is-busy" : ""}">${status.badge}</p>
+          <p class="status-badge${status.kind === "out" ? " is-out" : status.kind === "reserved" ? " is-busy" : status.kind === "soon" ? " is-soon" : ""}">${status.badge}</p>
           ${priceBadge(v)}
         </div>
         <div class="body">
@@ -242,7 +251,7 @@ function renderFleet() {
           <h3>${v.name}</h3>
           <p class="meta">${v.seats} places · ${kmLabel(v.km)} · ${v.transmission} · ${v.fuel}${v.power ? ` · ${v.power}` : ""}</p>
           <p class="meta">${status.label}</p>
-          <p class="more">Découvrir</p>
+          <p class="more">Réserver</p>
         </div>
       </article>`;
     })
@@ -256,11 +265,12 @@ function renderCount() {
   const statuses = VEHICLES.map(vehicleStatus);
   const out = statuses.filter((s) => s.kind === "out").length;
   const reserved = statuses.filter((s) => s.kind === "reserved").length;
+  const soon = statuses.filter((s) => s.kind === "soon").length;
   const free = statuses.filter((s) => s.kind === "free").length;
   if (countEl) {
     countEl.textContent = state.from && state.to
-      ? `${free} disponible${free > 1 ? "s" : ""} · ${out + reserved} indisponible${out + reserved > 1 ? "s" : ""}`
-      : `${VEHICLES.length} véhicules · ${out} en location · ${reserved} réservé${reserved > 1 ? "s" : ""}`;
+      ? `${free} disponible${free > 1 ? "s" : ""} · ${out + reserved + soon} indisponible${out + reserved + soon > 1 ? "s" : ""}`
+      : `${VEHICLES.length} véhicules · ${out} en location · ${soon} dès demain`;
   }
   const heroFleet = document.getElementById("heroFleet");
   if (heroFleet) {
@@ -460,6 +470,7 @@ function refreshModalBooking() {
   statusEl.textContent = status.label;
   statusEl.classList.toggle("is-out", status.kind === "out");
   statusEl.classList.toggle("is-busy", status.kind === "reserved");
+  statusEl.classList.toggle("is-soon", status.kind === "soon");
   const conflict = state.from && state.to && rangeBusy(v, state.from, state.to);
   els.bookNote.textContent = conflict
     ? "Ces dates sont déjà prises. Choisissez un autre créneau."
@@ -647,6 +658,13 @@ document.addEventListener("click", (e) => {
 const header = document.getElementById("siteHeader");
 const menuBtn = document.getElementById("menuBtn");
 const siteNav = document.getElementById("siteNav");
+
+function onHeaderScroll() {
+  header?.classList.toggle("is-scrolled", window.scrollY > 16);
+}
+
+onHeaderScroll();
+window.addEventListener("scroll", onHeaderScroll, { passive: true });
 
 function closeMenu() {
   header?.classList.remove("is-open");

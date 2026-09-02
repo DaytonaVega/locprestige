@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="theme-color" content="#080808" />
     <title>KR Location — Louez l’exception.</title>
     <meta
       name="description"
@@ -15,8 +15,8 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="images/logo.png?v=37" />
-    <link rel="stylesheet" href="css/styles.css?v=37" />
+    <link rel="icon" type="image/png" href="images/logo.png?v=51" />
+    <link rel="stylesheet" href="css/styles.css?v=51" />
   </head>
   <body>
     <div class="toast" id="dossierToast" hidden>
@@ -24,14 +24,14 @@
       <span>Permis et pièce d’identité sont arrivés sur l’e-mail de KR Location.</span>
     </div>
     <div class="loader" id="pageLoader" aria-hidden="true">
-      <img src="images/logo.png?v=37" alt="" />
+      <img src="images/logo.png?v=51" alt="" />
       <span class="loader-line"></span>
     </div>
 
     <header class="header" id="siteHeader">
       <div class="wrap header-inner">
         <a class="logo" href="#top">
-          <img src="images/logo.png?v=37" alt="KR Location" />
+          <img src="images/logo-mark.png?v=51" alt="KR Location" />
         </a>
         <nav class="nav" id="siteNav" aria-label="Navigation principale">
           <a href="#flotte">Flotte</a>
@@ -72,6 +72,9 @@
             <li><span>Remise</span><strong>Sur rendez-vous</strong></li>
             <li><span>Réservation</span><strong>Demande en ligne</strong></li>
           </ul>
+          <div class="hero-cta">
+            <a class="btn btn-gold" href="#reserver">Réserver</a>
+          </div>
         </div>
         <form class="datebar" id="reserver" autocomplete="off">
           <p class="datebar-label" id="datebarLabel">Vos dates</p>
@@ -154,7 +157,7 @@
         <div class="wrap">
           <header class="section-head" data-reveal>
             <p class="eyebrow">La flotte</p>
-            <h2>La flotte.</h2>
+            <h2>Chaque voiture a son tarif.</h2>
             <p class="count" id="fleetCount"></p>
           </header>
           <div class="filters" id="filters"></div>
@@ -246,6 +249,7 @@
               <img src="images/email.png" alt="" />
             </a>
           </div>
+          <a class="btn" href="#reserver">Réserver</a>
         </div>
       </div>
     </section>
@@ -257,6 +261,7 @@
         <p>Identité, permis et pièce d’identité. Tout part sur l’e-mail de l’agence. On vous confirme ensuite.</p>
         <div class="cta-actions">
           <button class="btn btn-gold" type="button" id="bookingCta">Réserver</button>
+          <a class="btn btn-light" href="#flotte">Voir la flotte</a>
         </div>
       </div>
     </section>
@@ -264,7 +269,8 @@
     <footer class="footer">
       <div class="wrap footer-grid">
         <div class="footer-brand">
-          <img class="footer-logo" src="images/logo.png?v=37" alt="KR Location" />
+          <img class="footer-logo" src="images/logo-mark.png?v=51" alt="KR Location" />
+          <p class="footer-slogan">Louez l’exception.</p>
           <p>Demande de réservation en ligne</p>
         </div>
         <nav class="footer-nav" aria-label="Pied de page">
@@ -319,7 +325,7 @@
             <div class="calendar" id="modalCalendar"></div>
             <p class="book-note" id="modalBookNote"></p>
             <div class="contact-box">
-              <button class="btn" type="button" id="openBookingBtn">Continuer la réservation</button>
+              <button class="btn" type="button" id="openBookingBtn">Réserver</button>
             </div>
           </div>
         </div>
@@ -507,7 +513,7 @@
       </article>
     </dialog>
 
-    <script src="js/vehicles.js?v=46"></script>
-    <script src="js/app.js?v=38"></script>
+    <script src="js/vehicles.js?v=51"></script>
+    <script src="js/app.js?v=51"></script>
   </body>
 </html>

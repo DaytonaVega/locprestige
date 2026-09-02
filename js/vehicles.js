@@ -19,7 +19,7 @@ const VEHICLES = [
     priceWeekend: 650,
     deposit: 5000,
     featured: true,
-    booked: [{ from: "2026-08-20", to: "2026-08-26" }],
+    booked: [],
     image: "images/rs6/avant.jpg?v=40",
     images: [
       "images/rs6/avant.jpg?v=40",
@@ -45,7 +45,7 @@ const VEHICLES = [
     price: 350,
     deposit: 4000,
     featured: true,
-    booked: [{ from: "2026-08-23", to: "2026-08-26" }],
+    booked: [{ from: "2026-08-30", to: "2026-09-05" }],
     image: "images/m3/avant.jpg?v=43",
     images: [
       "images/m3/avant.jpg?v=43",
@@ -70,7 +70,7 @@ const VEHICLES = [
     price: 350,
     deposit: 3500,
     featured: true,
-    booked: [{ from: "2026-08-29", to: "2026-09-01" }],
+    booked: [{ from: "2026-08-31", to: "2026-09-06" }],
     image: "images/taycan/avant.jpg?v=40",
     images: [
       "images/taycan/avant.jpg?v=40",
@@ -96,7 +96,7 @@ const VEHICLES = [
     price: 280,
     deposit: 2500,
     featured: true,
-    booked: [{ from: "2026-08-22", to: "2026-08-25" }],
+    booked: [],
     image: "images/a45/trois-quarts.jpg?v=41",
     images: [
       "images/a45/trois-quarts.jpg?v=41",
@@ -118,7 +118,7 @@ const VEHICLES = [
     km: 94670,
     price: 200,
     featured: true,
-    booked: [{ from: "2026-09-04", to: "2026-09-07" }],
+    booked: [{ from: "2026-09-02", to: "2026-09-02" }],
     image: "images/cayenne/trois-quarts.jpg?v=40",
     images: [
       "images/cayenne/trois-quarts.jpg?v=40",
@@ -144,7 +144,7 @@ const VEHICLES = [
     price: 250,
     deposit: 3000,
     featured: true,
-    booked: [{ from: "2026-08-21", to: "2026-08-24" }],
+    booked: [{ from: "2026-09-02", to: "2026-09-02" }],
     image: "images/gti/avant.jpg?v=40",
     images: [
       "images/gti/avant.jpg?v=40",
@@ -169,7 +169,7 @@ const VEHICLES = [
     price: 250,
     deposit: 2500,
     featured: true,
-    booked: [{ from: "2026-08-21", to: "2026-08-24" }],
+    booked: [],
     image: "images/panamera/trois-quarts.jpg?v=40",
     images: [
       "images/panamera/trois-quarts.jpg?v=40",
@@ -193,6 +193,7 @@ const VEHICLES = [
     price: 250,
     deposit: 2500,
     featured: true,
+    booked: [],
     image: "images/rs3/avant-large.jpg?v=40",
     images: [
       "images/rs3/avant-large.jpg?v=40",
@@ -215,7 +216,7 @@ const VEHICLES = [
     price: 85,
     deposit: 1000,
     featured: true,
-    booked: [{ from: "2026-08-25", to: "2026-08-28" }],
+    booked: [{ from: "2026-09-02", to: "2026-09-02" }],
     image: "images/classe-a/avant.jpg?v=40",
     images: [
       "images/classe-a/avant.jpg?v=40",
@@ -285,6 +286,7 @@ const VEHICLES = [
     price: 80,
     deposit: 1000,
     featured: true,
+    booked: [{ from: "2026-09-01", to: "2026-09-02" }],
     image: "images/bmw-116i/trois-quarts.jpg?v=40",
     images: [
       "images/bmw-116i/trois-quarts.jpg?v=40",
