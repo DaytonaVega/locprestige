@@ -18,7 +18,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="images/logo.png?v=54" />
-    <link rel="stylesheet" href="css/styles.css?v=55" />
+    <link rel="stylesheet" href="css/styles.css?v=56" />
   </head>
   <body>
     <div class="toast" id="dossierToast" hidden>
@@ -365,6 +365,7 @@
             <input type="hidden" name="Retour" id="bookingToField" />
             <input type="hidden" name="Agence" value="KR Location" />
             <input type="hidden" name="Véhicule" id="bookingVehicleName" />
+            <input type="hidden" name="Photos" id="bookingPhotosNote" />
 
             <div class="booking-pane is-on" data-pane="1">
               <p class="booking-kicker">Location</p>
@@ -403,13 +404,13 @@
               <p class="booking-kicker">Photos du permis</p>
               <div class="booking-grid">
                 <label class="file-field">
-                  <input type="file" name="permis_recto" accept="image/jpeg,image/png,image/webp,image/heic" required />
+                  <input type="file" name="Permis_recto" accept="image/jpeg,image/png,image/webp,image/heic" required />
                   <span>Permis — recto</span>
                   <strong data-file-name>Ajouter une photo</strong>
                   <img data-file-preview alt="" hidden />
                 </label>
                 <label class="file-field">
-                  <input type="file" name="permis_verso" accept="image/jpeg,image/png,image/webp,image/heic" required />
+                  <input type="file" name="Permis_verso" accept="image/jpeg,image/png,image/webp,image/heic" required />
                   <span>Permis — verso</span>
                   <strong data-file-name>Ajouter une photo</strong>
                   <img data-file-preview alt="" hidden />
@@ -431,13 +432,13 @@
         <div class="booking-done" id="bookingDone" hidden>
           <p class="eyebrow">Dossier reçu</p>
           <h2>Tout est arrivé sur l’e-mail de KR Location.</h2>
-          <p>Nom, téléphone, adresse et photos du permis. On vous écrit pour confirmer les dates et fixer la remise des clés.</p>
+          <p>Nom, téléphone, adresse et les 2 photos du permis (pièces jointes du mail, icône trombone). On vous écrit pour confirmer les dates.</p>
           <button class="btn" type="button" id="bookingDoneClose">Fermer</button>
         </div>
       </article>
     </dialog>
 
-    <script src="js/vehicles.js?v=55"></script>
-    <script src="js/app.js?v=55"></script>
+    <script src="js/vehicles.js?v=56"></script>
+    <script src="js/app.js?v=56"></script>
   </body>
 </html>

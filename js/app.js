@@ -704,10 +704,10 @@ document.addEventListener("dragstart", (e) => {
 });
 
 const FILE_MAX = 8 * 1024 * 1024;
-const FILE_KEYS = ["permis_recto", "permis_verso"];
+const FILE_KEYS = ["Permis_recto", "Permis_verso"];
 const STEP_FIELDS = {
   1: ["vehicule", "nom", "prenom", "telephone", "adresse"],
-  2: ["permis_recto", "permis_verso"],
+  2: ["Permis_recto", "Permis_verso"],
 };
 
 let bookingStep = 1;
@@ -820,14 +820,19 @@ function openBooking(vehicleId) {
   els.booking.showModal();
 }
 
-async function compressImage(file) {
+async function compressImage(file, fallbackName) {
   if (file.type === "application/pdf") {
     if (file.size > FILE_MAX) throw new Error("size");
     return file;
   }
-  if (!file.type.startsWith("image/")) throw new Error("type");
-  const bitmap = await createImageBitmap(file);
-  const max = 1400;
+  if (file.type && !file.type.startsWith("image/")) throw new Error("type");
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("type");
+  }
+  const max = 1280;
   const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -835,9 +840,9 @@ async function compressImage(file) {
   const ctx = canvas.getContext("2d");
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close?.();
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.8));
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.72));
   if (!blob) throw new Error("type");
-  const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+  const name = (file.name || fallbackName).replace(/\.[^.]+$/, "") + ".jpg";
   return new File([blob], name, { type: "image/jpeg" });
 }
 
@@ -941,6 +946,8 @@ function prepareMailFields(v, form) {
   if (fromEl) fromEl.value = formatLong(state.from);
   if (toEl) toEl.value = formatLong(state.to);
   if (nameEl) nameEl.value = v.name;
+  const photosEl = document.getElementById("bookingPhotosNote");
+  if (photosEl) photosEl.value = "2 photos jointes : Permis_recto.jpg et Permis_verso.jpg. Ouvre le trombone du mail.";
   form.action = `https://formsubmit.co/${encodeURIComponent(CONTACT.email)}`;
   form.method = "POST";
   form.enctype = "multipart/form-data";
@@ -990,36 +997,26 @@ async function submitBooking(e) {
       const file = form.elements[key].files[0];
       if (!file) throw new Error("files");
       if (file.size > FILE_MAX) throw new Error("size");
-      putFile(form.elements[key], await compressImage(file));
+      putFile(form.elements[key], await compressImage(file, `${key}.jpg`));
     }
     prepareMailFields(v, form);
-    const data = new FormData(form);
-    data.delete("_honey");
-    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONTACT.email)}`, {
-      method: "POST",
-      body: data,
-      headers: { Accept: "application/json" },
-    });
-    const json = await res.json().catch(() => ({}));
-    const ok = res.ok && (json.success === true || json.success === "true");
-    if (ok) {
-      showBookingDone();
-      return;
-    }
     form.submit();
   } catch (err) {
-    if (err?.message === "size") {
-      setBookingStep(2);
-      els.bookingError.textContent = "Un fichier dépasse 8 Mo. Compressez-le ou prenez une photo plus légère.";
-    } else {
-      prepareMailFields(v, form);
-      form.submit();
-      return;
-    }
-  } finally {
     submit.disabled = false;
     submit.textContent = "Envoyer le dossier";
     sheet?.classList.remove("is-sending");
+    if (err?.message === "size") {
+      setBookingStep(2);
+      els.bookingError.textContent = "Un fichier dépasse 8 Mo. Compressez-le ou prenez une photo plus légère.";
+      return;
+    }
+    if (err?.message === "type" || err?.message === "files") {
+      setBookingStep(2);
+      els.bookingError.textContent = "Ajoute deux photos nettes du permis, en JPEG ou PNG.";
+      return;
+    }
+    prepareMailFields(v, form);
+    form.submit();
   }
 }
 
